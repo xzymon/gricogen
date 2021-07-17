@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Gricogen</title>
+	<link rel="stylesheet" href="css/gricogen.css">
+</head>
+<body>
+<div id="container">
+	<h5 id="mousePositionLabel">Mouse Location</h5>
+	<div>
+		<input id="horizontal" type="number" value="800">
+		<input id="vertical" type="number" value="800">
+		<button id="setSize" type="button">Ustaw</button>
+	</div>
+	<div id="boardContainer">
+		<canvas id="background" class="layer" height="800" width="800"></canvas>
+		<svg id="background-svg" class="layer" height="800" width="800"></svg>
+
+		<canvas id="core" class="layer" height="800" width="800"></canvas>
+		<svg id="core-svg" class="layer" height="800" width="800"></svg>
+
+		<canvas id="body" class="layer" height="800" width="800"></canvas>
+		<svg id="body-svg" class="layer" height="800" width="800"></svg>
+
+		<canvas id="outfit" class="layer" height="800" width="800"></canvas>
+		<svg id="outfit-svg" class="layer" height="800" width="800"></svg>
+
+		<canvas id="coverage" class="layer" height="800" width="800"></canvas>
+		<svg id="coverage-svg" class="layer" height="800" width="800"></svg>
+
+		<canvas id="effects" class="layer" height="800" width="800"></canvas>
+		<svg id="effects-svg" class="layer" height="800" width="800"></svg>
+	</div>
+</div>
+<script src="js/gricogen.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+body {
+	background-color: #00FF00;
+}
+
+#boardContainer {
+	position: relative;
+}
+
+.layer {
+	box-sizing: border-box;
+	position: absolute;
+}
+
+#background {
+	background-color: rgba(100, 100, 100, 1);
+	z-index: 0;
+}
+
+#background-svg {
+	z-index: 1;
+}
+
+#core {
+	background-color: rgba(0, 0, 0, 0);
+	z-index: 2;
+}
+
+#core-svg {
+	z-index: 3;
+}
+
+#body {
+	background-color: rgba(0, 0, 0, 0);
+	z-index: 4;
+}
+
+#body-svg {
+	z-index: 5;
+}
+
+#outfit {
+	background-color: rgba(0, 0, 0, 0);
+	z-index: 6;
+}
+
+#outfit-svg {
+	z-index: 7;
+}
+
+#coverage {
+	background-color: rgba(0, 0, 0, 0);
+	z-index: 8;
+}
+
+#coverage-svg {
+	z-index: 9;
+}
+
+#effects {
+	background-color: rgba(0, 0, 0, 0);
+	z-index: 10;
+}
+
+#effects-svg {
+	z-index: 11;
+}

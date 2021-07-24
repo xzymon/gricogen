@@ -45,6 +45,8 @@ const svganOffset = 'offset';
 //wartosci dla SVG
 const styleGrid = "fill: none; stroke: gray; stroke-width: 3;";
 const idGrid = 'gridId';
+const idPokeballPathTop = 'topPokeballPartId';
+const idPokeballPathBottom = 'bottomPokeballPartId';
 const idConglArcPathTop = 'topPartId';
 const idConglArcPathBottom = 'bottomPartId';
 const idRawPoint = 'rawPointId';
@@ -52,6 +54,7 @@ const idCoreOfSun = 'coreOfSunId';
 const idRaysOfSun = 'raysOfSunId';
 const idGradRing = 'gradRingId';
 const idRing = 'ringId';
+const idHex = 'hexId';
 
 // zmienne pod obiekty
 let conglArcPathTop = undefined;
@@ -68,7 +71,7 @@ let cfaey = undefined; // arcEndY.value
 initializeBoardContainer();
 buttonSetSize.addEventListener('click', changeSize);
 
-//drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
+drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
 drawGraphics();
 
 function initializeBoardContainer() {
@@ -164,7 +167,34 @@ function drawGridOfRowsAndColumns(svgElem, xStart, yStart, w, h, style, rowsCoun
 	svgElem.appendChild(grid);
 }
 
+// szkielet dla dodania elementu path do elementu nadrzednego
+function drawPath(svgElem, oId, styleForPath, pathDString) {
+	console.log(svgElem);
+	const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+	path.id = oId;
+	path.setAttribute(svganStyle, styleForPath);
+	path.setAttribute(svganPathD, pathDString);
+	console.log(path);
+	svgElem.appendChild(path);
+	return path;
+}
+
 //figury geometryczne - podstawowe
+
+// rysowanie okregu
+function drawRect(svgElem, oId, styleForRect, x, y, width, height) {
+	console.log(svgElem);
+	const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+	rect.id = oId;
+	rect.setAttribute(svganStyle, styleForRect);
+	rect.setAttribute('x', x);
+	rect.setAttribute('y', y);
+	rect.setAttribute('width', width);
+	rect.setAttribute('height', height);
+	console.log(rect);
+	svgElem.appendChild(rect);
+	return rect;
+}
 
 // rysowanie okregu
 function drawCircle(svgElem, oId, styleForCircle, cX, cY, cR) {
@@ -181,6 +211,33 @@ function drawCircle(svgElem, oId, styleForCircle, cX, cY, cR) {
 }
 
 // rysowanie lukow
+
+// rysowanie kwadratu przedzielonego lukiem na dwie wypelnione czesci
+function drawSquareDividedByArc(svgElemTopLight, svgElemBottomShaded, idConglArcPathTop, idConglArcPathBottom, cfSize, cfMargin, styleTop, styleBottom) {
+	const innerArea = cfSize - 2 * cfMargin;
+	const innerUnit = innerArea / 10;
+	const x = 0;
+	const y = 0;
+	const width = innerArea;
+	const height = innerArea;
+	const arcControlX = 5 * innerUnit;
+	const arcControlY = 12/2 * innerUnit;
+	const arcEndY = 8 / 2 * innerUnit;
+
+	const transX = cfMargin + x;
+	const transY = cfMargin + y;
+	const transWidth = cfMargin + width;
+	const transHeight = cfMargin + height;
+	const transArcControlX = cfMargin + arcControlX;
+	const transArcControlY = cfMargin + arcControlY;
+	const transArcEndY = cfMargin + arcEndY;
+
+	drawRect(svgElemBottomShaded, idConglArcPathBottom, styleBottom, transX, transY, width, height);
+
+	const pathDString = `M ${transX} ${transY} L ${transX} ${transArcEndY} Q ${transArcControlX} ${transArcControlY} ${transWidth} ${transArcEndY} L ${transWidth} ${transY} Z`;
+	drawPath(svgElemTopLight, idConglArcPathTop, styleTop, pathDString);
+}
+
 //----------------------------------------rysowanie lukow wypelniajacych okrag------------------------------------------
 function drawCircleFilledWithShading(svgElemTopLight, svgElemBottomShaded, idConglArcPathTop, idConglArcPathBottom, cfSize, cfMargin, styleTop, styleBottom) {
 	const cfHalfSize = cfSize / 2;
@@ -188,6 +245,30 @@ function drawCircleFilledWithShading(svgElemTopLight, svgElemBottomShaded, idCon
 	const cfCentralY = cfHalfSize;
 	const cfRadiusX= cfHalfSize - cfMargin;
 	const cfRadiusY = cfHalfSize - cfMargin;
+	const angleDegreesOffset = 10;
+	const halfOfFullAngleInDegrees = 180;
+	const degree = 1; // troche sztuczne, ale tak by nie zmieniac kodu narazie
+
+	const startRotation = 0;
+	const factor = π/180; // dla stopni = 2*π / 360, bo okrag ma 2*π radianow - wiec mnozymy radiany przez 2*π i dzielimy przez 360 zeby miec stopnie
+
+	let adn = halfOfFullAngleInDegrees + 2 * angleDegreesOffset;
+	let add = degree;
+	let delta = factor * adn/add;
+
+	let afn = -angleDegreesOffset; //tak, z minusem
+	let afd = degree;
+	let fi = factor * afn/afd;
+
+	drawConglomerateArcPaths(svgElemTopLight, svgElemBottomShaded, idConglArcPathTop, idConglArcPathBottom, cfCentralX, cfCentralY, cfRadiusX, cfRadiusY, startRotation, delta, fi, styleTop, styleBottom);
+}
+
+function drawPokeball(svgElemTopLight, svgElemBottomShaded, idConglArcPathTop, idConglArcPathBottom, cfSize, cfMargin, styleTop, styleBottom) {
+	const cfHalfSize = cfSize / 2;
+	const cfCentralX = cfHalfSize;
+	const cfCentralY = cfHalfSize;
+	const cfRadiusX= cfHalfSize;
+	const cfRadiusY = cfHalfSize;
 	const angleDegreesOffset = 10;
 	const halfOfFullAngleInDegrees = 180;
 	const degree = 1; // troche sztuczne, ale tak by nie zmieniac kodu narazie
@@ -254,12 +335,170 @@ function replaceAndDrawConglomerateArcPath(svgElem, conglomerateArcPath, oId, st
 	return conglomerateArcPath;
 }
 
+//kropla
+function drawVerticalDroplet(svgElem, gradId, dropletId, dropletStyle, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	drawRadialGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue);
+	let pathD = "M 400 88 L 541 358 A 160 160 -28 1 1 259 358";
+	pathD = pathD.concat(" Z");
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = dropletId;
+	path.setAttribute(svganFill, "url(#" + gradId + ")");
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
+function drawWave(svgElem, gradId, waveId, waveStyle, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	drawVerticalGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue);
+	let pathD = "M -50 510 Q 0 510 50 465 Q 100 420 150 420 Q 200 420 250 465 Q 300 510 350 510 Q 400 510 450 465 Q 500 420 550 420 Q 600 420 650 465 Q 700 510 750 510 Q 800 510 850 465 L 850 800 L -50 800 Z";
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = waveId;
+	path.setAttribute(svganFill, "url(#" + gradId + ")");
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
+//trojkacik
+function drawSymmetricVerticalTriangle(svgElem, triangleId, triangleStyle, xH, aY, h, halfA) {
+	let ytop = aY - h;
+	let ybottom = aY;
+	let xleft = xH - halfA;
+	let xmid = xH;
+	let xright = xH + halfA;
+
+	let points = new Array();
+
+	points.push(xmid, ytop);
+	points.push(xright, ybottom);
+	points.push(xleft, ybottom);
+	let pathD = new String("M " + points[0] + " " + points[1]);
+	for (let lineI = 2; lineI < points.length; lineI += 2) {
+		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
+	}
+	pathD = pathD.concat(" Z");
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = triangleId;
+	path.setAttribute(svganStyle, triangleStyle);
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
+//rysowanie szescianow
+function pathDForHexagon(cX, cY, cR) {
+	let raw = cR * Math.sqrt(3) / 2;
+	let rawString = new String(raw);
+	let restored = Number(rawString);
+	let resultString = restored.toFixed(1);
+	let h = Number(resultString);
+
+	let xleft = Math.round(cX - h);
+	let xmid = Math.round(cX);
+	let xright = Math.round(cX + h);
+	let ytop = Math.round(cY - cR);
+	let yup = Math.round(cY - (cR/2));
+	let ydown = Math.round(cY + (cR/2));
+	let ybottom = Math.round(cY + cR);
+
+	let points = new Array();
+
+	points.push(xmid, ytop);
+	points.push(xright, yup);
+	points.push(xright, ydown);
+	points.push(xmid, ybottom);
+	points.push(xleft, ydown);
+	points.push(xleft, yup);
+	let pathD = new String("M " + points[0] + " " + points[1]);
+	for (let lineI = 2; lineI < points.length; lineI += 2) {
+		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
+	}
+	pathD = pathD.concat(" Z");
+	return pathD;
+}
+
+function drawAntiHexagon(svgElem, hexId, hexStyle, cX, cY, cR) {
+	let raw = cR * Math.sqrt(3) / 2;
+	let rawString = new String(raw);
+	let restored = Number(rawString);
+	let resultString = restored.toFixed(1);
+	let h = Number(resultString);
+
+	let xleft = Math.round(cX - h);
+	let xmid = Math.round(cX);
+	let xright = Math.round(cX + h);
+	let yup = Math.round(cY - (cR/2));
+	let ydown = Math.round(cY + (cR/2));
+	let max = 800;
+	let min = 0;
+
+	let pointsLeft = new Array();
+	pointsLeft.push(min, min);
+	pointsLeft.push(xmid, min);
+	pointsLeft.push(xleft, yup);
+	pointsLeft.push(xleft, ydown);
+	pointsLeft.push(xmid, max);
+	pointsLeft.push(min, max);
+
+	let pathLeftD = new String("M " + pointsLeft[0] + " " + pointsLeft[1]);
+	for (let lineI = 2; lineI < pointsLeft.length; lineI += 2) {
+		pathLeftD = pathLeftD.concat(" L " + pointsLeft[lineI] + " " + pointsLeft[lineI+1]);
+	}
+	pathLeftD = pathLeftD.concat(" Z");
+
+	const pathLeft = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	pathLeft.id = hexId + 'Left';
+	pathLeft.setAttribute(svganStyle, hexStyle);
+	pathLeft.setAttribute(svganPathD, pathLeftD);
+	console.log("adding object:");
+	console.log(pathLeft);
+	svgElem.appendChild(pathLeft);
+
+	let pointsRight = new Array();
+	pointsRight.push(max, min);
+	pointsRight.push(xmid, min);
+	pointsRight.push(xright, yup);
+	pointsRight.push(xright, ydown);
+	pointsRight.push(xmid, max);
+	pointsRight.push(max, max);
+	let pathRightD = new String("M " + pointsRight[0] + " " + pointsRight[1]);
+	for (let lineI = 2; lineI < pointsRight.length; lineI += 2) {
+		pathRightD = pathRightD.concat(" L " + pointsRight[lineI] + " " + pointsRight[lineI+1]);
+	}
+
+	pathRightD = pathRightD.concat(" Z");
+	const pathRight = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	pathRight.id = hexId + 'Right';
+	pathRight.setAttribute(svganStyle, hexStyle);
+	pathRight.setAttribute(svganPathD, pathRightD);
+	console.log("adding object:");
+	console.log(pathRight);
+	svgElem.appendChild(pathRight);
+}
+
+
+
+function drawHexagon(svgElem, hexId, hexStyle, cX, cY, cR) {
+	//let unit = size / 12;
+
+	let pathD = pathDForHexagon(cX, cY, cR);
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = hexId;
+	path.setAttribute(svganStyle, hexStyle);
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
 
 // bardziej wyrafinowane funkcje rysujace
 
-// okrag wypelniony gradientem
-function drawCircleWithVerticalGradient(svgElem, gradId, circleId, cX, cY, cR, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
-	console.log(svgElem);
+// stworzenie liniowego pionowego gradientu na elemencie (i dodanie gradientu do elementu)
+function drawVerticalGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
 	const gradientDef = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
 	const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
 	gradient.id = gradId;
@@ -278,6 +517,34 @@ function drawCircleWithVerticalGradient(svgElem, gradId, circleId, cX, cY, cR, g
 	gradient.appendChild(stopBottom);
 	gradientDef.appendChild(gradient);
 	svgElem.appendChild(gradientDef);
+}
+
+// stworzenie katowego gradientu na elemencie (i dodanie gradientu do elementu)
+function drawRadialGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	const gradientDef = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+	const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+	gradient.id = gradId;
+	gradient.setAttribute('x1', "0%");
+	gradient.setAttribute('y1', "0%");
+	gradient.setAttribute('x2', "0%");
+	gradient.setAttribute('y2', "100%");
+	console.log(gradient);
+	const stopTop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+	stopTop.setAttribute(svganOffset, "0%");
+	stopTop.setAttribute(svganStyle, "stop-color:rgb(" + grad1Red + "," + grad1Green + "," + grad1Blue + ");stop-opacity:1");
+	gradient.appendChild(stopTop);
+	const stopBottom = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+	stopBottom.setAttribute(svganOffset, "100%");
+	stopBottom.setAttribute(svganStyle, "stop-color:rgb(" + grad2Red + "," + grad2Green + "," + grad2Blue + ");stop-opacity:1");
+	gradient.appendChild(stopBottom);
+	gradientDef.appendChild(gradient);
+	svgElem.appendChild(gradientDef);
+}
+
+// okrag wypelniony liniowym pionowym gradientem
+function drawCircleWithVerticalGradient(svgElem, gradId, circleId, cX, cY, cR, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	console.log(svgElem);
+	drawVerticalGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue);
 	const kolo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 	kolo.id = circleId;
 	kolo.setAttribute(svganFill, "url(#" + gradId + ")");
@@ -288,6 +555,39 @@ function drawCircleWithVerticalGradient(svgElem, gradId, circleId, cX, cY, cR, g
 	svgElem.appendChild(kolo);
 	return kolo;
 }
+
+// okrag wypelniony liniowym pionowym gradientem
+function drawRectWithVerticalGradient(svgElem, gradId, rectId, x, y, width, height, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	console.log(svgElem);
+	drawVerticalGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue);
+	const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+	rect.id = rectId;
+	rect.setAttribute(svganFill, "url(#" + gradId + ")");
+	rect.setAttribute('x', x);
+	rect.setAttribute('y', y);
+	rect.setAttribute('width', width);
+	rect.setAttribute('height', height);
+	console.log(rect);
+	svgElem.appendChild(rect);
+	return rect;
+}
+
+// szesciokat wypelniony gradientem
+function drawHexagonWithVerticalGradient(svgElem, gradId, hexId, cX, cY, cR, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	console.log(svgElem);
+	drawVerticalGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue);
+	let pathD = pathDForHexagon(cX, cY, cR);
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = hexId;
+	path.setAttribute(svganFill, "url(#" + gradId + ")");
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+	return path;
+}
+
+//operacje na okregu
 
 //-------------------------------obrot figury o kat - poprzez obrot jej punktow o kat-----------------------------------
 function rotateShape(cX, cY, pointsXYsMerged, angleAsPartOfFullCircleLength) {
@@ -445,7 +745,6 @@ function drawEnergyCategoryIcon() {
 	drawThunder(gCircle, 'thunderId', thunderStyle, globalSize);
 }
 
-// cale ksztalty
 function drawBuildingCategoryIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillLight = bodySVGLayer;
@@ -485,8 +784,97 @@ function drawSpaceCategoryIcon() {
 	drawSunWith8Rays(gCircle, idCoreOfSun, idRaysOfSun, styleSun, globalSize/2, globalSize/2, globalUnitSize, 2*globalUnitSize, globalUnitSize/3, 4/3 * globalUnitSize);
 }
 
+function drawOceanCategoryIcon() {
+	let gVertGrad = backgroundSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+	let gBorder = coverageSVGLayer;
+
+	const colorDroplet = '#00566d';
+	const colorDropletStroke = '#00adc9';
+	const colorAntiHexagonBackground = '#646464';
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+	const styleAntiHexagonBackground = "fill: " + colorAntiHexagonBackground;
+	const styleDroplet = "fill: " + colorDroplet + "; stroke: " + colorDropletStroke + "; stroke-width: " + (globalUnitSize * 1/8);
+	const styleWave = "fill: " + colorDroplet;
+
+	const hexStyle = "fill: white; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+
+	//drawHexagon(gCircle, idHex, hexStyle, globalSize/2, globalSize/2, globalSize/2);
+
+	// top: rgb(123,175,210) #7bafd2  // 109, 191, 210 #6dbfd2
+	// bottom: rgb(190, 204, 229) #becce5 // 189, 225, 229 #bde1e5
+	drawHexagonWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 109, 191, 210, 189, 225, 229);
+
+	//drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 153, 0, 153, 51, 0, 51);
+
+	drawAntiHexagon(gBorder, 'antiHexagonBackgroundId', styleAntiHexagonBackground, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
+	drawHexagon(gBorder, 'outerHexagonEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
+
+	drawVerticalDroplet(gCircle, 'dropletGradId', 'dropletId', styleDroplet, 0, 173, 201, 0, 86, 109);
+	drawWave(gFillShad, 'waveGradId', 'waveId', styleWave, 0, 86, 109, 0, 173, 201);
+}
+
+function drawHexCategoryIcon() {
+	let gVertGrad = backgroundSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+	let gBorder = coverageSVGLayer;
+
+	const colorDroplet = '#00566d';
+	const colorDropletStroke = '#00adc9';
+	const colorAntiHexagonBackground = '#646464';
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+	const styleAntiHexagonBackground = "fill: " + colorAntiHexagonBackground;
+	const styleDroplet = "fill: " + colorDroplet + "; stroke: " + colorDropletStroke + "; stroke-width: " + (globalUnitSize * 1/8);
+	const styleWave = "fill: " + colorDroplet;
+
+	const hexStyle = "fill: white; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+
+	//drawHexagon(gCircle, idHex, hexStyle, globalSize/2, globalSize/2, globalSize/2);
+
+	// top: rgb(123,175,210) #7bafd2  // 109, 191, 210 #6dbfd2
+	// bottom: rgb(190, 204, 229) #becce5 // 189, 225, 229 #bde1e5
+	drawHexagonWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 109, 191, 210, 189, 225, 229);
+
+	//drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 153, 0, 153, 51, 0, 51);
+
+	drawAntiHexagon(gBorder, 'antiHexagonBackgroundId', styleAntiHexagonBackground, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
+	drawHexagon(gBorder, 'outerHexagonEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
+
+	drawVerticalDroplet(gCircle, 'dropletGradId', 'dropletId', styleDroplet, 0, 173, 201, 0, 86, 109);
+	drawWave(gFillShad, 'waveGradId', 'waveId', styleWave, 0, 86, 109, 0, 173, 201);
+}
+
+function drawUnitIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorArcPathTop = '#555';
+	const colorArcPathBottom = '#222';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const styleSun = "fill: yellow";
+
+	const margin = globalUnitSize / 4 ;
+	const borderSize = globalSize - globalUnitSize / 2;
+
+	drawRectWithVerticalGradient(gVertGrad, idGradRing, idRing, 0, 0, globalSize, globalSize, 119, 119, 119, 34, 34, 34);
+	drawSquareDividedByArc(gFillShad, gFillShad, 'filledSquareTopId', 'filledSquareBottomId', globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+
+	drawRect(gCircle, 'outerRectEmptyId', styleCircleOuterBlack, margin, margin, borderSize, borderSize );
+	// your shape
+}
+
 function drawGraphics() {
 	//drawEnergyCategoryIcon();
 	//drawBuildingCategoryIcon();
-	drawSpaceCategoryIcon();
+	//drawSpaceCategoryIcon();
+	//drawOceanCategoryIcon();
+
+	drawUnitIcon();
 }

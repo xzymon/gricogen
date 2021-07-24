@@ -71,7 +71,7 @@ let cfaey = undefined; // arcEndY.value
 initializeBoardContainer();
 buttonSetSize.addEventListener('click', changeSize);
 
-drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
+//drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
 drawGraphics();
 
 function initializeBoardContainer() {
@@ -726,6 +726,16 @@ function drawSunWith8Rays(svgElem, sunId, sunRaysId, sunStyle, cX, cY, sunRadius
 	drawCircle(svgElem, sunId, sunStyle, cX, cY, sunRadius);
 }
 
+// tlen
+function drawOxygen(svgElem, oxygenFrontId, oxygenBackId, oxygenStyle, size) {
+	const cX = 60 / 144 * size;
+	const cY = 84 / 144 * size;
+	const oxyRadius = 24 / 144 * size;
+
+	drawCircle(svgElem, oxygenBackId, oxygenStyle, cX, cY, oxyRadius);
+	drawCircle(svgElem, oxygenFrontId, oxygenStyle, cY, cX, oxyRadius);
+}
+
 
 // cale ksztalty
 function drawEnergyCategoryIcon() {
@@ -816,6 +826,21 @@ function drawOceanCategoryIcon() {
 	drawWave(gFillShad, 'waveGradId', 'waveId', styleWave, 0, 86, 109, 0, 173, 201);
 }
 
+function drawOxygenIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const styleCircleInnerPastel = "fill: #dccb9b";
+	const oxygenStyle = "fill: #ff0000; stroke: #aa0000; stroke-width: " + (globalUnitSize * 1/4);
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 255, 255, 255, 255, 255, 255); //grad2 = po 34
+	drawCircle(gFillShad, 'innerCircleFilledId', styleCircleInnerPastel, globalSize/2, globalSize/2, (globalSize/2) - globalUnitSize);
+
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4));
+	drawOxygen(gCircle, 'oxygenFrontId', 'oxygenBackId', oxygenStyle, globalSize);
+}
+
 function drawHexCategoryIcon() {
 	let gVertGrad = backgroundSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -858,7 +883,7 @@ function drawUnitIcon() {
 	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
 	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
 	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
-	const styleSun = "fill: yellow";
+	const styleOxygen = "fill: red";
 
 	const margin = globalUnitSize / 4 ;
 	const borderSize = globalSize - globalUnitSize / 2;
@@ -876,5 +901,7 @@ function drawGraphics() {
 	//drawSpaceCategoryIcon();
 	//drawOceanCategoryIcon();
 
-	drawUnitIcon();
+	drawOxygenIcon();
+
+	//drawUnitIcon();
 }

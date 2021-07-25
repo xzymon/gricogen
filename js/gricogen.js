@@ -71,7 +71,7 @@ let cfaey = undefined; // arcEndY.value
 initializeBoardContainer();
 buttonSetSize.addEventListener('click', changeSize);
 
-//drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
+drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
 drawGraphics();
 
 function initializeBoardContainer() {
@@ -236,6 +236,46 @@ function drawSquareDividedByArc(svgElemTopLight, svgElemBottomShaded, idConglArc
 
 	const pathDString = `M ${transX} ${transY} L ${transX} ${transArcEndY} Q ${transArcControlX} ${transArcControlY} ${transWidth} ${transArcEndY} L ${transWidth} ${transY} Z`;
 	drawPath(svgElemTopLight, idConglArcPathTop, styleTop, pathDString);
+}
+
+function drawHexagonDividedByArc(svgElemTopLight, svgElemBottomShaded, hexTopId, hexBottomId, hexTopStyle, hexBottomStyle, cfSize, cfMargin) {
+	const cX = cfSize / 2;
+	const cY = cfSize / 2;
+	const cR = cfSize /2 - cfMargin / 2;
+
+	const innerArea = cfSize - 2 * cfMargin;
+	const innerUnit = innerArea / 10;
+	const arcControlX = 5 * innerUnit;
+	const arcControlY = 35 / 6 * innerUnit;
+	const arcEndY = 25 /6 * innerUnit;
+
+	const transArcControlX = cfMargin + arcControlX;
+	const transArcControlY = cfMargin + arcControlY;
+	const transArcEndY = cfMargin + arcEndY;
+
+	let pathD = pathDForHexagon(cX, cY, cR);
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = hexBottomId;
+	path.setAttribute(svganStyle, hexBottomStyle);
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElemBottomShaded.appendChild(path);
+
+	let raw = cR * Math.sqrt(3) / 2;
+	let rawString = new String(raw);
+	let restored = Number(rawString);
+	let resultString = restored.toFixed(1);
+	let h = Number(resultString);
+
+	let xleft = Math.round(cX - h);
+	let xmid = Math.round(cX);
+	let xright = Math.round(cX + h);
+	let ytop = Math.round(cY - cR);
+	let yup = Math.round(cY - (cR/2));
+
+	const pathDString = `M ${xmid} ${ytop} L ${xleft} ${yup} L ${xleft} ${transArcEndY} Q ${transArcControlX} ${transArcControlY} ${xright} ${transArcEndY} L ${xright} ${yup} Z`;
+	drawPath(svgElemTopLight, hexTopStyle, hexTopStyle, pathDString);
 }
 
 //----------------------------------------rysowanie lukow wypelniajacych okrag------------------------------------------
@@ -403,6 +443,8 @@ function pathDForHexagon(cX, cY, cR) {
 	let yup = Math.round(cY - (cR/2));
 	let ydown = Math.round(cY + (cR/2));
 	let ybottom = Math.round(cY + cR);
+
+	console.log(`xleft: ${xleft}`);
 
 	let points = new Array();
 
@@ -673,6 +715,57 @@ function drawThunder(svgElem, thunderId, thunderStyle, size) {
 	svgElem.appendChild(path);
 }
 
+// wyrafinowane ksztalty
+function drawHeat(svgElem, heatId, heatStyle, size, offsetX) {
+	let unit = size / 36;
+	let points = new Array();
+	points.push((18 + offsetX) * unit, 5 * unit);
+	points.push((18 + offsetX) * unit, 16 * unit);
+	points.push((22 + offsetX) * unit, 18 * unit);
+	points.push((18 + offsetX) * unit, 31 * unit);
+	points.push((18 + offsetX) * unit, 20 * unit);
+	points.push((14 + offsetX) * unit, 18 * unit);
+	let pathD = new String("M " + points[0] + " " + points[1]);
+	for (let lineI = 2; lineI < points.length; lineI += 2) {
+		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
+	}
+	pathD = pathD.concat(" Z");
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = heatId;
+	path.setAttribute(svganStyle, heatStyle);
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
+// wyrafinowane ksztalty
+function drawTitanium(svgElem, heatId, heatStyle) {
+	let points = new Array();
+	points.push(400,167);
+	points.push(478,292);
+	points.push(622,328);
+	points.push(526,441);
+	points.push(537,589);
+	points.push(400,533);
+	points.push(263,589);
+	points.push(274,441);
+	points.push(178,328);
+	points.push(322,292);
+	let pathD = new String("M " + points[0] + " " + points[1]);
+	for (let lineI = 2; lineI < points.length; lineI += 2) {
+		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
+	}
+	pathD = pathD.concat(" Z");
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = heatId;
+	path.setAttribute(svganStyle, heatStyle);
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
 function drawBuildingShape(svgElem, thunderId, thunderStyle, size) {
 	let unit = size / 12;
 	let points = new Array();
@@ -736,6 +829,47 @@ function drawOxygen(svgElem, oxygenFrontId, oxygenBackId, oxygenStyle, size) {
 	drawCircle(svgElem, oxygenFrontId, oxygenStyle, cY, cX, oxyRadius);
 }
 
+function drawForest(svgElem, forestId, forestStyle) {
+	let points = [];
+	//points.push(329, 400);
+	points.push(329, 400);
+	points.push(307, 391); //L
+	points.push(253, 432, 180, 394); //Q
+	points.push(157, 316, 232, 310); //Q
+	points.push(206, 193, 316, 223); //Q
+	points.push(319, 161, 372, 162); //Q
+	points.push(482, 173, 471, 309); //Q
+	points.push(536, 362, 471, 403); //Q
+	points.push(439, 417, 386, 398); //Q
+	points.push(363, 503.5, 402, 609); //Q
+	points.push(397, 614); //L
+	points.push(364, 601, 331, 617); //Q
+	points.push(327, 614.5, 323, 612); //Q
+	points.push(346, 505.5, 327, 399); //Q
+	 //Z
+
+	let pathD = new String("M " + forestScaleX(points[0]) + " " + forestScaleY(points[1]));
+	pathD.concat(" L " + forestScaleX(points[2]) + " " + forestScaleY(points[3]));
+	for (let lineI = 4; lineI < 36; lineI += 4) {
+		pathD = pathD.concat(" Q " + forestScaleX(points[lineI]) + " " + forestScaleY(points[lineI+1]) + " " + forestScaleX(points[lineI+2]) + " " + forestScaleY(points[lineI+3]));
+	}
+	console.log(`about to line to ${points[36]}, ${points[37]}`);
+	pathD.concat(" L " + forestScaleX(points[36]) + " " + forestScaleY(points[37]));
+	for (let lineI = 38; lineI < 50; lineI += 4) {
+		pathD = pathD.concat(" Q " + forestScaleX(points[lineI]) + " " + forestScaleY(points[lineI+1]) + " " + forestScaleX(points[lineI+2]) + " " + forestScaleY(points[lineI+3]));
+	}
+	pathD.concat(" Z ");
+
+	drawPath(svgElem, forestId, forestStyle, pathD);
+}
+
+function forestScaleX(value) {
+	return (value * 1.2) - 10;
+}
+
+function forestScaleY(value) {
+	return (value * 1.2) - 65;
+}
 
 // cale ksztalty
 function drawEnergyCategoryIcon() {
@@ -794,7 +928,7 @@ function drawSpaceCategoryIcon() {
 	drawSunWith8Rays(gCircle, idCoreOfSun, idRaysOfSun, styleSun, globalSize/2, globalSize/2, globalUnitSize, 2*globalUnitSize, globalUnitSize/3, 4/3 * globalUnitSize);
 }
 
-function drawOceanCategoryIcon() {
+function drawOceanIcon() {
 	let gVertGrad = backgroundSVGLayer;
 	let gFillShad = bodySVGLayer;
 	let gCircle = outfitSVGLayer;
@@ -841,7 +975,7 @@ function drawOxygenIcon() {
 	drawOxygen(gCircle, 'oxygenFrontId', 'oxygenBackId', oxygenStyle, globalSize);
 }
 
-function drawHexCategoryIcon() {
+function drawForestIcon() {
 	let gVertGrad = backgroundSVGLayer;
 	let gFillShad = bodySVGLayer;
 	let gCircle = outfitSVGLayer;
@@ -851,29 +985,75 @@ function drawHexCategoryIcon() {
 	const colorDropletStroke = '#00adc9';
 	const colorAntiHexagonBackground = '#646464';
 
+	const colorHexTop = '#00dd00';
+	const colorHexBottom = '#00bb00';
+
 	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+	const styleGreenOuterBlack = "fill: #008800; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
 	const styleAntiHexagonBackground = "fill: " + colorAntiHexagonBackground;
-	const styleDroplet = "fill: " + colorDroplet + "; stroke: " + colorDropletStroke + "; stroke-width: " + (globalUnitSize * 1/8);
-	const styleWave = "fill: " + colorDroplet;
+	const hexTopStyle = "fill: " + colorHexTop;
+	const hexBottomStyle = "fill: " + colorHexBottom;
 
 	const hexStyle = "fill: white; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
 
-	//drawHexagon(gCircle, idHex, hexStyle, globalSize/2, globalSize/2, globalSize/2);
-
-	// top: rgb(123,175,210) #7bafd2  // 109, 191, 210 #6dbfd2
-	// bottom: rgb(190, 204, 229) #becce5 // 189, 225, 229 #bde1e5
-	drawHexagonWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 109, 191, 210, 189, 225, 229);
-
-	//drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 153, 0, 153, 51, 0, 51);
+	drawHexagonWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 0, 248, 0, 0, 137, 0);
 
 	drawAntiHexagon(gBorder, 'antiHexagonBackgroundId', styleAntiHexagonBackground, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
 	drawHexagon(gBorder, 'outerHexagonEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
 
-	drawVerticalDroplet(gCircle, 'dropletGradId', 'dropletId', styleDroplet, 0, 173, 201, 0, 86, 109);
-	drawWave(gFillShad, 'waveGradId', 'waveId', styleWave, 0, 86, 109, 0, 173, 201);
+	//drawHexagon(gFillShad, 'outerGreenHexagonEmptyId', styleGreenOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 2));
+	drawHexagonDividedByArc(gFillShad, gFillShad, 'hexForestTopId', 'hexForestBottomId', hexTopStyle, hexBottomStyle, globalSize, globalUnitSize);
+	drawForest(gBorder, 'outerGreenId', styleGreenOuterBlack);
 }
 
-function drawUnitIcon() {
+function drawEnergyUnitIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const color = 'rgb(153, 0, 153)'
+	const colorArcPathTop = '#707';
+	const colorArcPathBottom = '#505';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const thunderStyle = "fill: white; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+
+	const margin = globalUnitSize / 4 ;
+	const borderSize = globalSize - globalUnitSize / 2;
+
+	drawRectWithVerticalGradient(gVertGrad, idGradRing, idRing, 0, 0, globalSize, globalSize, 153, 0, 153, 51, 0, 51);
+	drawSquareDividedByArc(gFillShad, gFillShad, 'filledSquareTopId', 'filledSquareBottomId', globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+
+	drawRect(gCircle, 'outerRectEmptyId', styleCircleOuterBlack, margin, margin, borderSize, borderSize );
+	drawThunder(gCircle, 'thunderId', thunderStyle, globalSize);
+}
+
+function drawHeatUnitIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorArcPathTop = '#c00';
+	const colorArcPathBottom = '#a00';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const heatStyle = "fill: yellow; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+
+	const margin = globalUnitSize / 4 ;
+	const borderSize = globalSize - globalUnitSize / 2;
+
+	drawRectWithVerticalGradient(gVertGrad, idGradRing, idRing, 0, 0, globalSize, globalSize, 255, 0, 0, 109, 0, 0);
+	drawSquareDividedByArc(gFillShad, gFillShad, 'filledSquareTopId', 'filledSquareBottomId', globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+
+	drawRect(gCircle, 'outerRectEmptyId', styleCircleOuterBlack, margin, margin, borderSize, borderSize );
+	drawHeat(gCircle, 'heat1Id', heatStyle, globalSize, -10);
+	drawHeat(gCircle, 'heat2Id', heatStyle, globalSize, 0);
+	drawHeat(gCircle, 'heat3Id', heatStyle, globalSize, 10);
+}
+
+function drawTitaniumUnitIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
 	let gCircle = outfitSVGLayer;
@@ -883,7 +1063,7 @@ function drawUnitIcon() {
 	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
 	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
 	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
-	const styleOxygen = "fill: red";
+	const titaniumStyle = "fill: none; stroke: yellow; stroke-width: " + (globalUnitSize * 2/3);
 
 	const margin = globalUnitSize / 4 ;
 	const borderSize = globalSize - globalUnitSize / 2;
@@ -892,16 +1072,20 @@ function drawUnitIcon() {
 	drawSquareDividedByArc(gFillShad, gFillShad, 'filledSquareTopId', 'filledSquareBottomId', globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
 
 	drawRect(gCircle, 'outerRectEmptyId', styleCircleOuterBlack, margin, margin, borderSize, borderSize );
-	// your shape
+	drawTitanium(gCircle, 'titaniumId', titaniumStyle);
 }
 
 function drawGraphics() {
 	//drawEnergyCategoryIcon();
 	//drawBuildingCategoryIcon();
 	//drawSpaceCategoryIcon();
-	//drawOceanCategoryIcon();
 
-	drawOxygenIcon();
+	//drawOxygenIcon();
 
-	//drawUnitIcon();
+	//drawForestIcon();
+	//drawOceanIcon();
+
+	//drawEnergyUnitIcon();
+	//drawHeatUnitIcon();
+	drawTitaniumUnitIcon();
 }

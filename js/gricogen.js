@@ -715,7 +715,6 @@ function drawThunder(svgElem, thunderId, thunderStyle, size) {
 	svgElem.appendChild(path);
 }
 
-// wyrafinowane ksztalty
 function drawHeat(svgElem, heatId, heatStyle, size, offsetX) {
 	let unit = size / 36;
 	let points = new Array();
@@ -739,7 +738,6 @@ function drawHeat(svgElem, heatId, heatStyle, size, offsetX) {
 	svgElem.appendChild(path);
 }
 
-// wyrafinowane ksztalty
 function drawTitanium(svgElem, heatId, heatStyle) {
 	let points = new Array();
 	points.push(400,167);
@@ -757,16 +755,52 @@ function drawTitanium(svgElem, heatId, heatStyle) {
 		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
 	}
 	pathD = pathD.concat(" Z");
-	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-	path.id = heatId;
-	path.setAttribute(svganStyle, heatStyle);
-	path.setAttribute(svganPathD, pathD);
-	console.log("adding object:");
-	console.log(path);
-	svgElem.appendChild(path);
+	drawPath(svgElem, heatId, heatStyle, pathD);
 }
 
-function drawBuildingShape(svgElem, thunderId, thunderStyle, size) {
+function drawSteel(svgElem, steelId, steelStyle) {
+	let points = new Array();
+
+	points.push(214, 277);
+	points.push(214, 191);
+	points.push(153, 227);
+	points.push(153, 309);
+	points.push(214, 336);
+	points.push(199, 622);
+
+	points.push(199 + 34 * 2, 622);
+	points.push(214 + 19*2, 336);
+	points.push(153 + (47+33)*2, 309);
+	points.push(153 + (47+33)*2, 227);
+	points.push(214 + 19*2, 191);
+	points.push(214 + 19*2, 277);
+	let pathD = new String("M " + points[0] + " " + points[1]);
+	for (let lineI = 2; lineI < points.length; lineI += 2) {
+		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
+	}
+	pathD = pathD.concat(" Z");
+	drawPath(svgElem, steelId, steelStyle, pathD);
+}
+
+function drawSteelHammer(svgElem, steelId, steelStyle) {
+	let points = new Array();
+	points.push(350, 227);
+	points.push(350, 316);
+	points.push(465, 316);
+	points.push(453, 622);
+	points.push(531, 622);
+	points.push(519, 316);
+	points.push(638, 316);
+	points.push(585, 227);
+	let pathD = new String("M " + points[0] + " " + points[1]);
+	for (let lineI = 2; lineI < points.length; lineI += 2) {
+		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
+	}
+	pathD = pathD.concat(" Z");
+	drawPath(svgElem, steelId, steelStyle, pathD);
+}
+
+function drawBuildingShape(svgElem, buildingId, buildingStyle, size) {
 	let unit = size / 12;
 	let points = new Array();
 	points.push(6 * unit, 3 * unit);
@@ -779,13 +813,7 @@ function drawBuildingShape(svgElem, thunderId, thunderStyle, size) {
 		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
 	}
 	pathD = pathD.concat(" Z");
-	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-	path.id = thunderId;
-	path.setAttribute(svganStyle, thunderStyle);
-	path.setAttribute(svganPathD, pathD);
-	console.log("adding object:");
-	console.log(path);
-	svgElem.appendChild(path);
+	drawPath(svgElem, buildingId, buildingStyle, pathD);
 }
 
 //--------------------------------------------rysowanie Slonca!---------------------------------------------------------
@@ -898,6 +926,8 @@ function drawBuildingCategoryIcon() {
 	const colorArcPathTop = 'rgb(169, 122, 78)';
 	const colorArcPathBottom = 'rgba(67, 41, 24, 0.5)';
 	const colorBuildingTop = 'rgb(81, 55, 38)';
+	const colorGradientTop = 'rgb(149, 101, 64)';
+	const colorGradientBottom = 'rgb(71, 44, 26)';
 	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
 	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
 	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
@@ -1075,6 +1105,32 @@ function drawTitaniumUnitIcon() {
 	drawTitanium(gCircle, 'titaniumId', titaniumStyle);
 }
 
+function drawSteelUnitIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorArcPathTop = 'rgb(169, 122, 78)';
+	const colorArcPathBottom = 'rgb(149, 101, 64)';
+	const colorBuildingTop = 'rgb(81, 55, 38)';
+	const colorGradientTop = 'rgb(149, 101, 64)';
+	const colorGradientBottom = 'rgb(71, 44, 26)';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const steelStyle = "fill: " + colorGradientBottom + "; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+
+	const margin = globalUnitSize / 4 ;
+	const borderSize = globalSize - globalUnitSize / 2;
+
+	drawRectWithVerticalGradient(gVertGrad, idGradRing, idRing, 0, 0, globalSize, globalSize, 149, 101, 64, 71, 44, 26);
+	drawSquareDividedByArc(gFillShad, gFillShad, 'filledSquareTopId', 'filledSquareBottomId', globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+
+	drawRect(gCircle, 'outerRectEmptyId', styleCircleOuterBlack, margin, margin, borderSize, borderSize );
+	drawSteel(gCircle, 'steelId', steelStyle);
+	drawSteelHammer(gCircle, 'steelHammerId', steelStyle);
+}
+
 function drawGraphics() {
 	//drawEnergyCategoryIcon();
 	//drawBuildingCategoryIcon();
@@ -1087,5 +1143,6 @@ function drawGraphics() {
 
 	//drawEnergyUnitIcon();
 	//drawHeatUnitIcon();
-	drawTitaniumUnitIcon();
+	//drawTitaniumUnitIcon();
+	drawSteelUnitIcon();
 }

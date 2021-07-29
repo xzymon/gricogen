@@ -71,7 +71,7 @@ let cfaey = undefined; // arcEndY.value
 initializeBoardContainer();
 buttonSetSize.addEventListener('click', changeSize);
 
-//drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
+drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
 drawGraphics();
 
 function initializeBoardContainer() {
@@ -716,6 +716,31 @@ function rotateOnAxisY(delta, r, dy) {
 	return Math.round(result);
 }
 
+// strzalka wydarzenia
+function drawArrow(svgElem, thunderId, thunderStyle, size) {
+	let unit = size / 48;
+	let points = new Array();
+	points.push(19 * unit, 10 * unit);
+	points.push(19 * unit, 25 * unit);
+	points.push(14 * unit, 25 * unit);
+	points.push(24 * unit, 39 * unit);
+	points.push(34 * unit, 25 * unit);
+	points.push(29 * unit, 25 * unit);
+	points.push(29 * unit, 10 * unit);
+	let pathD = new String("M " + points[0] + " " + points[1]);
+	for (let lineI = 2; lineI < points.length; lineI += 2) {
+		pathD = pathD.concat(" L " + points[lineI] + " " + points[lineI+1]);
+	}
+	pathD = pathD.concat(" Z");
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = thunderId;
+	path.setAttribute(svganStyle, thunderStyle);
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
 // wyrafinowane ksztalty
 function drawThunder(svgElem, thunderId, thunderStyle, size) {
 	let unit = size / 12;
@@ -938,12 +963,88 @@ function drawForest(svgElem, forestId, forestStyle) {
 	drawPath(svgElem, forestId, forestStyle, pathD);
 }
 
+function drawCity(svgElem, forestId, colorCity, colorMask, size) {
+	const unit = size / 12;
+	const u = 1/144 * size;
+	const styleEmpty = `fill: none; stroke: ${colorCity}; stroke-width: ${unit * 1/8}`;
+	const styleFilled = `fill: ${colorCity}`;
+	const styleMask = `fill: ${colorMask}`;
+
+	const cX = 72 * u;
+	const cY = 72 * u;
+	const r = 40 * u;
+
+	drawCircle(svgElem, 'cityDomeId', styleEmpty, cX, cY, r);
+
+	drawRect(svgElem, 'baseId', styleFilled, 30 * u, 72 * u, 84 * u, 6 * u);
+
+	drawRect(svgElem, 'skyscraper01Id', styleFilled, 36 * u, 68 * u, 4 * u, 4 * u);
+	drawRect(svgElem, 'skyscraper02Id', styleFilled, 42 * u, 66 * u, 4 * u, 6 * u);
+	drawRect(svgElem, 'skyscraper03Id', styleFilled, 48 * u, 52 * u, 2 * u, 20 * u);
+	drawRect(svgElem, 'skyscraper04Id', styleFilled, 52 * u, 50 * u, 4 * u, 22 * u);
+	drawRect(svgElem, 'skyscraper05Id', styleFilled, 56 * u, 62 * u, 4 * u, 10 * u);
+	drawRect(svgElem, 'skyscraper06Id', styleFilled, 51 * u, 68 * u, 23 * u, 6 * u);
+	drawRect(svgElem, 'skyscraper07Id', styleFilled, 64 * u, 58 * u, 4 * u, 14 * u);
+	drawRect(svgElem, 'skyscraper08Id', styleFilled, 70 * u, 44 * u, 4 * u, 28 * u);
+	drawRect(svgElem, 'skyscraper09Id', styleFilled, 76 * u, 54 * u, 4 * u, 18 * u);
+	drawRect(svgElem, 'skyscraper10Id', styleFilled, 82 * u, 60 * u, 4 * u, 12 * u);
+	drawRect(svgElem, 'skyscraper11Id', styleFilled, 86 * u, 68 * u, 2 * u, 6 * u);
+	drawRect(svgElem, 'skyscraper12Id', styleFilled, 90 * u, 60 * u, 8 * u, 12 * u);
+	drawRect(svgElem, 'skyscraper13Id', styleFilled, 94 * u, 54 * u, 4 * u, 18 * u);
+	drawRect(svgElem, 'skyscraper14Id', styleFilled, 100 * u, 66 * u, 4 * u, 6 * u);
+	drawRect(svgElem, 'skyscraper15Id', styleFilled, 106 * u, 68 * u, 4 * u, 4 * u);
+
+	drawRect(svgElem, 'maskId', styleMask, 30 * u, 78 * u, 84 * u, 36 * u);
+}
+
 function forestScaleX(value) {
 	return (value * 1.2) - 10;
 }
 
 function forestScaleY(value) {
 	return (value * 1.2) - 65;
+}
+
+// cale ksztalty
+function drawEventCategoryIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorArcPathTop = '#fee921';
+	const colorArcPathBottom = '#fec82d';
+	const colorGradientBottom = '#000';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const styleSymbolIcon = `fill: ${colorGradientBottom}; stroke: #000000; stroke-width: 12`;
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 255, 248, 0, 252, 153, 30);
+	drawCircleFilledWithShading(gFillShad, gFillShad, idConglArcPathTop, idConglArcPathBottom, globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4));
+	drawArrow(gCircle, 'arrowId', styleSymbolIcon, globalSize);
+}
+
+// cale ksztalty
+function drawCityCategoryIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorSymbol = '#000';
+	const colorHexTop = '#b4b4b4';
+	const colorHexBottom = '#6a6a6a';
+
+	const styleConglArcPathTop = `fill: ${colorHexTop}`;
+	const styleConglArcPathBottom = `fill: ${colorHexBottom}`;
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+
+
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 196, 196, 196, 42, 42, 42);
+	drawCircleFilledWithShading(gFillShad, gFillShad, idConglArcPathTop, idConglArcPathBottom, globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4));
+
+	drawCity(gCircle, 'outerGreenId', colorSymbol, colorHexBottom, globalSize);
 }
 
 // cale ksztalty
@@ -1117,6 +1218,33 @@ function drawForestIcon() {
 	drawForest(gBorder, 'outerGreenId', styleGreenOuterBlack);
 }
 
+function drawCityIcon() {
+	let gVertGrad = backgroundSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+	let gBorder = coverageSVGLayer;
+
+	const colorAntiHexagonBackground = '#646464';
+
+	const colorSymbol = '#000';
+	const colorHexTop = '#b4b4b4';
+	const colorHexBottom = '#6a6a6a';
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+	const styleAntiHexagonBackground = "fill: " + colorAntiHexagonBackground;
+	const hexTopStyle = "fill: " + colorHexTop;
+	const hexBottomStyle = "fill: " + colorHexBottom;
+
+	drawHexagonWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 196, 196, 196, 42, 42, 42);
+
+	drawAntiHexagon(gBorder, 'antiHexagonBackgroundId', styleAntiHexagonBackground, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
+	drawHexagon(gBorder, 'outerHexagonEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
+
+	//drawHexagon(gFillShad, 'outerGreenHexagonEmptyId', styleGreenOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 2));
+	drawHexagonDividedByArc(gFillShad, gFillShad, 'hexForestTopId', 'hexForestBottomId', hexTopStyle, hexBottomStyle, globalSize, globalUnitSize);
+	drawCity(gBorder, 'outerGreenId', colorSymbol, colorHexBottom, globalSize);
+}
+
 function drawEnergyUnitIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -1221,7 +1349,7 @@ function drawVegetationUnitIcon() {
 	const colorGradientBottom = '#229000';
 	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
 	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
-	const styleSymbolIcon = `fill: ${colorGradientBottom}; stroke: #000000; stroke-width: 12`;
+	const styleSymbolIcon = `fill: ${colorGradientBottom}; stroke: #005500; stroke-width: 12`;
 
 	const margin = globalUnitSize / 4 ;
 	const borderSize = globalSize - globalUnitSize / 2;
@@ -1258,22 +1386,25 @@ function drawScienceUnitIcon() {
 }
 
 function drawGraphics() {
+	//drawEventCategoryIcon();
+	//drawCityCategoryIcon();
 	//drawEnergyCategoryIcon();
 	//drawBuildingCategoryIcon();
 	//drawSpaceCategoryIcon();
 
 	//drawOxygenIcon();
-
 	//drawVegetationIcon();
-	//drawForestIcon();
 	//drawScienceIcon();
+
+	//drawForestIcon();
+	drawCityIcon();
 	//drawOceanIcon();
 
 	//drawEnergyUnitIcon();
 	//drawHeatUnitIcon();
 	//drawTitaniumUnitIcon();
 	//drawSteelUnitIcon();
-	drawVegetationUnitIcon();
+	//drawVegetationUnitIcon();
 
 	//drawScienceUnitIcon();
 }

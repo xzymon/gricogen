@@ -71,7 +71,7 @@ let cfaey = undefined; // arcEndY.value
 initializeBoardContainer();
 buttonSetSize.addEventListener('click', changeSize);
 
-drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
+//drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
 drawGraphics();
 
 function initializeBoardContainer() {
@@ -181,7 +181,7 @@ function drawPath(svgElem, oId, styleForPath, pathDString) {
 
 //figury geometryczne - podstawowe
 
-// rysowanie okregu
+// rysowanie prostokata
 function drawRect(svgElem, oId, styleForRect, x, y, width, height) {
 	console.log(svgElem);
 	const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -208,6 +208,31 @@ function drawCircle(svgElem, oId, styleForCircle, cX, cY, cR) {
 	console.log(kolo);
 	svgElem.appendChild(kolo);
 	return kolo;
+}
+
+// rysowanie elipsy
+function drawEllipse(svgElem, oId, styleForEllipse, cX, cY, rX, rY) {
+	console.log(svgElem);
+	const eli = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+	eli.id = oId;
+	eli.setAttribute(svganStyle, styleForEllipse);
+	eli.setAttribute('cx', cX);
+	eli.setAttribute('cy', cY);
+	eli.setAttribute('rx', rX);
+	eli.setAttribute('ry', rY);
+	console.log(eli);
+	svgElem.appendChild(eli);
+	return eli;
+}
+
+function useTransformRotate(svgElem, rotateShapeId, rotateDegrees, rotationCenterX, rotationCenterY) {
+	console.log(svgElem);
+	const rot = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+	rot.setAttribute('href', `#${rotateShapeId}`);
+	rot.setAttribute('transform', `rotate(${rotateDegrees}, ${rotationCenterX}, ${rotationCenterY})`);
+	console.log(rot);
+	svgElem.appendChild(rot);
+	return rot;
 }
 
 // rysowanie lukow
@@ -847,6 +872,28 @@ function drawSunWith8Rays(svgElem, sunId, sunRaysId, sunStyle, cX, cY, sunRadius
 	drawCircle(svgElem, sunId, sunStyle, cX, cY, sunRadius);
 }
 
+// atom
+function drawScience(svgElem, baseEllipseId, style, size) {
+	const cX = 72 / 144 * size;
+	const cY = 72 / 144 * size;
+	const rX = 12 / 144 * size;
+	const rY = 44 / 144 * size;
+
+	drawCircle(svgElem, 'centralPoint', style, cX, cY, 6);
+	drawEllipse(svgElem, baseEllipseId, style, cX, cY, rX, rY);
+	useTransformRotate(svgElem, baseEllipseId, 60, cX, cY);
+	useTransformRotate(svgElem, baseEllipseId, 120, cX, cY);
+}
+
+// atom
+function drawVegetation(svgElem, style) {
+	const pathTailDString = "M 258 468 Q 208 532 161 507 Q 182 621 281 504 Z";
+	drawPath(svgElem, 'leafTailId', style, pathTailDString);
+
+	const pathLeafDString = "M 633 267 Q 257 184 250 425 Q 256 496 315 529 Q 410 576 502 516 C 584 441 523 392 633 267 Z";
+	drawPath(svgElem, 'leafBodyId', style, pathLeafDString);
+}
+
 // tlen
 function drawOxygen(svgElem, oxygenFrontId, oxygenBackId, oxygenStyle, size) {
 	const cX = 60 / 144 * size;
@@ -958,6 +1005,21 @@ function drawSpaceCategoryIcon() {
 	drawSunWith8Rays(gCircle, idCoreOfSun, idRaysOfSun, styleSun, globalSize/2, globalSize/2, globalUnitSize, 2*globalUnitSize, globalUnitSize/3, 4/3 * globalUnitSize);
 }
 
+function drawScienceIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const styleCircleInnerPastel = "fill: #eeeeee";
+	const scienceStyle = "fill: none; stroke: #000000; stroke-width: 12";
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 255, 255, 255, 60, 60, 60);
+	drawCircle(gFillShad, 'innerCircleFilledId', styleCircleInnerPastel, globalSize/2, globalSize/2, (globalSize/2) - globalUnitSize);
+
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4));
+	drawScience(gCircle, 'baseEllipseId', scienceStyle, globalSize);
+}
+
 function drawOceanIcon() {
 	let gVertGrad = backgroundSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -1003,6 +1065,25 @@ function drawOxygenIcon() {
 
 	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4));
 	drawOxygen(gCircle, 'oxygenFrontId', 'oxygenBackId', oxygenStyle, globalSize);
+}
+
+function drawVegetationIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const colorArcPathTop = '#81b300';
+	const colorArcPathBottom = '#58a400';
+	const colorGradientBottom = '#229000';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleSymbolIcon = `fill: ${colorGradientBottom}; stroke: #000000; stroke-width: 12`;
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 140, 196, 0, 44, 124, 44);
+	drawCircleFilledWithShading(gFillShad, gFillShad, idConglArcPathTop, idConglArcPathBottom, globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4));
+	drawVegetation(gCircle, styleSymbolIcon);
 }
 
 function drawForestIcon() {
@@ -1112,8 +1193,6 @@ function drawSteelUnitIcon() {
 
 	const colorArcPathTop = 'rgb(169, 122, 78)';
 	const colorArcPathBottom = 'rgb(149, 101, 64)';
-	const colorBuildingTop = 'rgb(81, 55, 38)';
-	const colorGradientTop = 'rgb(149, 101, 64)';
 	const colorGradientBottom = 'rgb(71, 44, 26)';
 	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
 	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
@@ -1131,6 +1210,53 @@ function drawSteelUnitIcon() {
 	drawSteelHammer(gCircle, 'steelHammerId', steelStyle);
 }
 
+function drawVegetationUnitIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const colorArcPathTop = '#81b300';
+	const colorArcPathBottom = '#58a400';
+	const colorGradientBottom = '#229000';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleSymbolIcon = `fill: ${colorGradientBottom}; stroke: #000000; stroke-width: 12`;
+
+	const margin = globalUnitSize / 4 ;
+	const borderSize = globalSize - globalUnitSize / 2;
+
+	drawRectWithVerticalGradient(gVertGrad, idGradRing, idRing, 0, 0, globalSize, globalSize, 140, 196, 0, 44, 124, 44);
+	drawSquareDividedByArc(gFillShad, gFillShad, 'filledSquareTopId', 'filledSquareBottomId', globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+
+	drawRect(gCircle, 'outerRectEmptyId', styleCircleOuterBlack, margin, margin, borderSize, borderSize );
+	drawVegetation(gCircle, styleSymbolIcon);
+}
+
+function drawScienceUnitIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorPlainSquare = '#eeeeee';
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const stylePlainSquare = "fill: " + colorPlainSquare;
+	const scienceStyle = "fill: none; stroke: #000000; stroke-width: 12";
+
+	const plainSquareMargin = globalUnitSize;
+	const plainSquareBorderSize = globalSize - globalUnitSize *2;
+
+	const margin = globalUnitSize / 4 ;
+	const borderSize = globalSize - globalUnitSize / 2;
+
+	drawRectWithVerticalGradient(gVertGrad, idGradRing, idRing, 0, 0, globalSize, globalSize, 255, 255, 255, 60, 60, 60);
+	drawRect(gFillShad, 'plainSquareId', stylePlainSquare, plainSquareMargin, plainSquareMargin, plainSquareBorderSize, plainSquareBorderSize );
+
+	drawRect(gCircle, 'outerRectEmptyId', styleCircleOuterBlack, margin, margin, borderSize, borderSize );
+
+	drawScience(gCircle, 'baseEllipseId', scienceStyle, globalSize);
+}
+
 function drawGraphics() {
 	//drawEnergyCategoryIcon();
 	//drawBuildingCategoryIcon();
@@ -1138,11 +1264,16 @@ function drawGraphics() {
 
 	//drawOxygenIcon();
 
+	//drawVegetationIcon();
 	//drawForestIcon();
+	//drawScienceIcon();
 	//drawOceanIcon();
 
 	//drawEnergyUnitIcon();
 	//drawHeatUnitIcon();
 	//drawTitaniumUnitIcon();
-	drawSteelUnitIcon();
+	//drawSteelUnitIcon();
+	drawVegetationUnitIcon();
+
+	//drawScienceUnitIcon();
 }

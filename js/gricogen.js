@@ -71,7 +71,7 @@ let cfaey = undefined; // arcEndY.value
 initializeBoardContainer();
 buttonSetSize.addEventListener('click', changeSize);
 
-drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
+//drawGridOfRowsAndColumns(effectsSVGLayer, 0, 0, globalWidth, globalHeight, styleGrid, globalUnitsCount, globalUnitsCount);
 drawGraphics();
 
 function initializeBoardContainer() {
@@ -898,6 +898,262 @@ function drawSunWith8Rays(svgElem, sunId, sunRaysId, sunStyle, cX, cY, sunRadius
 }
 
 // atom
+function drawGreenAmericas(svgElem, style) {
+	let points = [];
+	points.push(397, 508); //M
+	points.push(360, 437);
+	points.push(360, 398);
+	points.push(379, 381);
+	points.push(379, 356);
+	points.push(375, 347);
+	points.push(369, 351);
+	points.push(350, 351);
+	points.push(336, 345);
+	points.push(317, 317);
+	points.push(310, 315);
+	points.push(307, 308);
+	points.push(287, 304);
+	points.push(273, 290);
+	points.push(258, 294);
+	points.push(214, 274);
+	points.push(211, 243);
+	points.push(207, 243);
+	points.push(194, 203);
+	points.push(188, 203);
+	points.push(195, 244);
+	points.push(190, 246);
+	points.push(184, 226);
+	points.push(180, 221);
+	points.push(177, 193);
+	points.push(177, 168);
+	points.push(189, 135);
+	points.push(205, 104);
+
+	points.push(266, 65, 340, 54);
+
+	points.push(354, 62);
+	points.push(369, 65);
+	points.push(343, 77);
+	points.push(343, 82);
+	points.push(364, 84);
+	points.push(364, 87);
+	points.push(370, 93);
+	points.push(379, 93);
+	points.push(379, 86);
+	points.push(384, 81);
+	points.push(384, 73);
+	points.push(403, 68);
+	points.push(417, 71);
+	points.push(421, 76);
+	points.push(428, 73);
+	points.push(449, 85);
+	points.push(475, 96);
+	points.push(475, 100);
+	points.push(451, 103);
+	points.push(423, 110);
+	points.push(454, 107);
+	points.push(455, 111);
+	points.push(459, 112);
+	points.push(459, 116);
+	points.push(438, 126);
+	points.push(424, 132);
+	points.push(424, 139);
+	points.push(406, 143);
+	points.push(394, 149);
+	points.push(394, 164);
+	points.push(392, 172);
+	points.push(365, 188);
+	points.push(365, 194);
+	points.push(369, 203);
+	points.push(369, 223);
+	points.push(363, 230);
+	points.push(355, 223);
+	points.push(352, 209);
+	points.push(343, 202);
+	points.push(299, 202);
+	points.push(270, 211);
+	points.push(267, 224);
+	points.push(256, 246);
+	points.push(261, 267);
+	points.push(286, 268);
+	points.push(296, 257);
+	points.push(321, 251);
+	points.push(321, 261);
+	points.push(309, 289);
+	points.push(315, 291);
+	points.push(327, 289);
+	points.push(344, 289);
+	points.push(341, 301);
+	points.push(339, 319);
+	points.push(339, 329);
+	points.push(351, 342);
+	points.push(362, 342);
+	points.push(371, 333);
+	points.push(379, 333);
+	points.push(384, 337);
+	points.push(395, 331);
+	points.push(404, 324);
+	points.push(418, 319);
+	points.push(427, 313);
+	points.push(442, 315);
+	points.push(446, 325);
+	points.push(483, 325);
+	points.push(498, 330);
+	points.push(512, 342);
+	points.push(526, 356);
+	points.push(542, 356);
+	points.push(564, 368);
+	points.push(568, 382);
+	points.push(576, 385);
+	points.push(581, 402);
+	points.push(603, 409);
+	points.push(605, 414);
+	points.push(627, 419);
+	points.push(641, 435);
+	points.push(654, 438);
+	points.push(654, 456);
+	points.push(642, 474);
+	points.push(629, 489);
+	points.push(626, 506);
+	points.push(623, 521);
+	points.push(602, 551);
+	points.push(561, 571);
+	points.push(561, 585);
+	points.push(530, 613);
+	points.push(530, 620);
+	points.push(503, 626);
+	points.push(497, 629);
+	points.push(509, 629);
+	points.push(488, 644);
+	points.push(458, 657);
+	points.push(445, 667);
+	points.push(445, 686);
+	points.push(426, 697);
+	points.push(415, 723);
+	points.push(428, 725);
+	points.push(409, 730);
+	points.push(403, 717);
+	points.push(403, 666);
+	points.push(418, 624);
+	points.push(418, 596);
+	points.push(432, 534);
+	points.push(425, 529);
+	points.push(422, 522);
+	points.push(397, 508);
+
+	let pathD = new String("M " + americasScaleX(points[0]) + " " + americasScaleY(points[1]));
+	for (let lineI = 2; lineI < 56; lineI += 2) {
+		pathD = pathD.concat(" L " + americasScaleX(points[lineI]) + " " + americasScaleY(points[lineI+1]));
+	}
+	let qI = 56;
+	pathD = pathD.concat(" Q " + americasScaleX(points[qI]) + " " + americasScaleY(points[qI+1]) + " " + americasScaleX(points[qI+2]) + " " + americasScaleY(points[qI+3]));
+	//console.log(`about to line to ${points[36]}, ${points[37]}`);
+	for (let lineI = 60; lineI < 276; lineI += 2) {
+		pathD = pathD.concat(" L " + americasScaleX(points[lineI]) + " " + americasScaleY(points[lineI+1]));
+	}
+	pathD = pathD.concat(" Z ");
+
+	drawPath(svgElem, 'americasId', style, pathD);
+}
+
+function drawSouthSemiarid(svgElem, style) {
+	let points = [];
+	points.push(561, 571);
+	points.push(550, 563);
+	points.push(536, 570);
+	points.push(511, 553);
+	points.push(524, 533);
+	points.push(514, 533);
+	points.push(528, 501);
+	points.push(548, 493);
+	points.push(571, 447);
+	points.push(600, 447);
+	points.push(627, 419);
+	points.push(641, 435);
+	points.push(654, 438);
+	points.push(654, 456);
+	points.push(642, 474);
+	points.push(629, 489);
+	points.push(626, 506);
+	points.push(623, 521);
+	points.push(602, 551);
+	points.push(561, 571);
+
+	let pathD = new String("M " + americasScaleX(points[0]) + " " + americasScaleY(points[1]));
+	for (let lineI = 2; lineI < 38; lineI += 2) {
+		pathD = pathD.concat(" L " + americasScaleX(points[lineI]) + " " + americasScaleY(points[lineI+1]));
+	}
+	pathD = pathD.concat(" Z ");
+
+	drawPath(svgElem, 'southSemiaridId', style, pathD);
+}
+
+function drawAndes(svgElem, style) {
+	let points = [];
+	points.push(418, 624);
+	points.push(418, 596);
+	points.push(432, 534);
+	points.push(425, 529);
+	points.push(422, 522);
+	points.push(397, 508);
+	points.push(360, 437);
+	points.push(379, 445);
+	points.push(413, 492);
+	points.push(441, 504);
+	points.push(454, 520);
+	points.push(475, 528);
+	points.push(447, 617);
+	points.push(427, 653);
+	points.push(447, 617);
+
+	let pathD = new String("M " + americasScaleX(points[0]) + " " + americasScaleY(points[1]));
+	for (let lineI = 2; lineI < 28; lineI += 2) {
+		pathD = pathD.concat(" L " + americasScaleX(points[lineI]) + " " + americasScaleY(points[lineI+1]));
+	}
+	pathD = pathD.concat(" Z ");
+
+	drawPath(svgElem, 'southSemiaridId', style, pathD);
+}
+
+function drawCordillera(svgElem, style) {
+	let points = [];
+	points.push(194, 203);
+	points.push(188, 203);
+	points.push(195, 244);
+	points.push(190, 246);
+	points.push(184, 226);
+	points.push(180, 221);
+	points.push(177, 193);
+	points.push(177, 168);
+	points.push(189, 135);
+	points.push(205, 104);
+	points.push(252, 88);
+	points.push(254, 134);
+	points.push(259, 171);
+	points.push(250, 199);
+	points.push(246, 255);
+	points.push(240, 259);
+	points.push(221, 246);
+	points.push(211, 212);
+
+	let pathD = new String("M " + americasScaleX(points[0]) + " " + americasScaleY(points[1]));
+	for (let lineI = 2; lineI < 34; lineI += 2) {
+		pathD = pathD.concat(" L " + americasScaleX(points[lineI]) + " " + americasScaleY(points[lineI+1]));
+	}
+	pathD = pathD.concat(" Z ");
+
+	drawPath(svgElem, 'cordilleraId', style, pathD);
+}
+
+function americasScaleX(value) {
+	return (value * 0.95) + 22;
+}
+
+function americasScaleY(value) {
+	return (value * 0.95) + 22;
+}
+
+// atom
 function drawScience(svgElem, baseEllipseId, style, size) {
 	const cX = 72 / 144 * size;
 	const cY = 72 / 144 * size;
@@ -1104,6 +1360,29 @@ function drawSpaceCategoryIcon() {
 	drawCircleFilledWithShading(gFillShad, gFillShad, idConglArcPathTop, idConglArcPathBottom, globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
 	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4) );
 	drawSunWith8Rays(gCircle, idCoreOfSun, idRaysOfSun, styleSun, globalSize/2, globalSize/2, globalUnitSize, 2*globalUnitSize, globalUnitSize/3, 4/3 * globalUnitSize);
+}
+
+function drawEarthCategoryIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorArcPathTop = '#202346';
+	const colorArcPathBottom = '#0c0d39';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const styleGreen = `fill: #2b381c`;
+	const styleSemiarid = `fill: #6a5a41`;
+	const styleMountains = `fill: #7b624c`;
+
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 87, 87, 97, 12, 13, 39);
+	drawCircleFilledWithShading(gFillShad, gFillShad, idConglArcPathTop, idConglArcPathBottom, globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4) );
+	drawGreenAmericas(gCircle, styleGreen);
+	drawSouthSemiarid(gCircle, styleSemiarid);
+	drawAndes(gCircle, styleMountains);
+	drawCordillera(gCircle, styleMountains);
 }
 
 function drawScienceIcon() {
@@ -1391,13 +1670,14 @@ function drawGraphics() {
 	//drawEnergyCategoryIcon();
 	//drawBuildingCategoryIcon();
 	//drawSpaceCategoryIcon();
+	drawEarthCategoryIcon();
 
 	//drawOxygenIcon();
 	//drawVegetationIcon();
 	//drawScienceIcon();
 
 	//drawForestIcon();
-	drawCityIcon();
+	//drawCityIcon();
 	//drawOceanIcon();
 
 	//drawEnergyUnitIcon();

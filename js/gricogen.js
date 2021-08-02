@@ -210,6 +210,20 @@ function drawCircle(svgElem, oId, styleForCircle, cX, cY, cR) {
 	return kolo;
 }
 
+// rysowanie okregu
+function drawCircleRadialGrad(svgElem, oId, gradId, cX, cY, cR) {
+	console.log(svgElem);
+	const kolo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+	kolo.id = oId;
+	kolo.setAttribute(svganFill, "url(#" + gradId + ")");
+	kolo.setAttribute('cx', cX);
+	kolo.setAttribute('cy', cY);
+	kolo.setAttribute('r', cR);
+	console.log(kolo);
+	svgElem.appendChild(kolo);
+	return kolo;
+}
+
 // rysowanie elipsy
 function drawEllipse(svgElem, oId, styleForEllipse, cX, cY, rX, rY) {
 	console.log(svgElem);
@@ -1153,6 +1167,63 @@ function americasScaleY(value) {
 	return (value * 0.95) + 22;
 }
 
+function drawCircularMicrobe(svgElem, gradId, shapeId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	drawRadialGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue);
+	const cX = 271;
+	const cY = 374;
+	const r = 118;
+
+	drawCircleRadialGrad(svgElem, shapeId, gradId, cX, cY, r);
+
+	/*
+	let points = [];
+	points.push();
+
+	let pathD = new String("M " + americasScaleX(points[0]) + " " + americasScaleY(points[1]));
+	for (let lineI = 2; lineI < 38; lineI += 2) {
+		pathD = pathD.concat(" L " + americasScaleX(points[lineI]) + " " + americasScaleY(points[lineI+1]));
+	}
+	pathD = pathD.concat(" Z ");
+
+	drawPath(svgElem, 'southSemiaridId', style, pathD);
+	 */
+}
+
+//gorny mikrob
+function drawTopMicrobe(svgElem, gradId, shapeId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	drawRadialGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue);
+
+	let pathD = "M 436 117 Q 506 212 628 304 Q 647 312 628 329 Q 604 355 547 329 Q 480 257 413 192 Q 394 171 382 145 Q 373 114 403 111 M 403 111 L 435 115";
+
+	pathD = pathD.concat(" Z");
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = shapeId;
+	path.setAttribute(svganFill, "url(#" + gradId + ")");
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
+//dolny mikrob
+function drawBottomMicrobe(svgElem, gradId, shapeId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue) {
+	drawRadialGradientOnElement(svgElem, gradId, grad1Red, grad1Green, grad1Blue, grad2Red, grad2Green, grad2Blue);
+
+	let pathD = "M 296 566 Q 442 516 583 457 Q 610 449 618 474 Q 625 493 606 512 Q 499.5 565 393 599 C 317 637 325 625 297 629 Q 281 621 277 606 Q 278 581 297 566";
+	pathD = pathD.concat(" Z");
+	const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+	path.id = shapeId;
+	path.setAttribute(svganFill, "url(#" + gradId + ")");
+	path.setAttribute(svganPathD, pathD);
+	console.log("adding object:");
+	console.log(path);
+	svgElem.appendChild(path);
+}
+
+function drawAntenna() {
+
+}
+
 // atom
 function drawScience(svgElem, baseEllipseId, style, size) {
 	const cX = 72 / 144 * size;
@@ -1383,6 +1454,43 @@ function drawEarthCategoryIcon() {
 	drawSouthSemiarid(gCircle, styleSemiarid);
 	drawAndes(gCircle, styleMountains);
 	drawCordillera(gCircle, styleMountains);
+}
+
+function drawMicrobesCategoryIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorArcPathTop = '#d9dc4b';
+	const colorArcPathBottom = '#b4cc03';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+
+	const microbe1Red = 106;
+	const microbe1Green = 137;
+	const microbe1Blue = 25;
+	const microbe2Red = 123;
+	const microbe2Green = 112;
+	const microbe2Blue = 88;
+
+	const vg1Red = 218;
+	const vg1Green = 221;
+	const vg1Blue = 28;
+	const vg2Red = 63;
+	const vg2Green = 108;
+	const vg2Blue = 39;
+
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, vg1Red, vg1Green, vg1Blue, vg2Red, vg2Green, vg2Blue);
+	drawCircleFilledWithShading(gFillShad, gFillShad, idConglArcPathTop, idConglArcPathBottom, globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4) );
+	drawMicrobesSymbols(gCircle, microbe1Red, microbe1Green, microbe1Blue, microbe2Red, microbe2Green, microbe2Blue);
+}
+
+function drawMicrobesSymbols(layer, microbe1Red, microbe1Green, microbe1Blue, microbe2Red, microbe2Green, microbe2Blue) {
+	drawTopMicrobe(layer, 'topMicrobeGradId', 'topMicrobeId', microbe1Red, microbe1Green, microbe1Blue, microbe2Red, microbe2Green, microbe2Blue);
+	drawCircularMicrobe(layer, 'circularMicrobeGradId', 'circularMicrobeId', microbe1Red, microbe1Green, microbe1Blue, microbe2Red, microbe2Green, microbe2Blue);
+	drawBottomMicrobe(layer, 'bottomMicrobeGradId', 'bottomMicrobeId', microbe1Red, microbe1Green, microbe1Blue, microbe2Red, microbe2Green, microbe2Blue);
 }
 
 function drawScienceIcon() {
@@ -1640,6 +1748,41 @@ function drawVegetationUnitIcon() {
 	drawVegetation(gCircle, styleSymbolIcon);
 }
 
+function drawMicrobesUnitIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const colorArcPathTop = '#d9dc4b';
+	const colorArcPathBottom = '#b4cc03';
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+
+	const microbe1Red = 106;
+	const microbe1Green = 137;
+	const microbe1Blue = 25;
+	const microbe2Red = 123;
+	const microbe2Green = 112;
+	const microbe2Blue = 88;
+
+	const vg1Red = 218;
+	const vg1Green = 221;
+	const vg1Blue = 28;
+	const vg2Red = 63;
+	const vg2Green = 108;
+	const vg2Blue = 39;
+
+	const margin = globalUnitSize / 4 ;
+	const borderSize = globalSize - globalUnitSize / 2;
+
+	drawRectWithVerticalGradient(gVertGrad, idGradRing, idRing, 0, 0, globalSize, globalSize, vg1Red, vg1Green, vg1Blue, vg2Red, vg2Green, vg2Blue);
+	drawSquareDividedByArc(gFillShad, gFillShad, 'filledSquareTopId', 'filledSquareBottomId', globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+
+	drawRect(gCircle, 'outerRectEmptyId', styleCircleOuterBlack, margin, margin, borderSize, borderSize );
+	drawMicrobesSymbols(gCircle, microbe1Red, microbe1Green, microbe1Blue, microbe2Red, microbe2Green, microbe2Blue);
+}
+
 function drawScienceUnitIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -1670,7 +1813,10 @@ function drawGraphics() {
 	//drawEnergyCategoryIcon();
 	//drawBuildingCategoryIcon();
 	//drawSpaceCategoryIcon();
-	drawEarthCategoryIcon();
+	//drawEarthCategoryIcon();
+
+
+	//drawMicrobesCategoryIcon();
 
 	//drawOxygenIcon();
 	//drawVegetationIcon();
@@ -1685,6 +1831,7 @@ function drawGraphics() {
 	//drawTitaniumUnitIcon();
 	//drawSteelUnitIcon();
 	//drawVegetationUnitIcon();
+	drawMicrobesUnitIcon();
 
 	//drawScienceUnitIcon();
 }

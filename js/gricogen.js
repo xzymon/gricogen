@@ -304,6 +304,32 @@ function drawSquareDividedByArc(svgElemTopLight, svgElemBottomShaded, idConglArc
 	drawPath(svgElemTopLight, idConglArcPathTop, styleTop, pathDString);
 }
 
+// rysowanie prostokata przedzielonego lukiem na dwie wypelnione czesci
+function drawRectDividedByArc(svgElemTopLight, svgElemBottomShaded, idConglArcPathTop, idConglArcPathBottom, cfSize, cfMargin, styleTop, styleBottom) {
+	const innerArea = cfSize - 2 * cfMargin;
+	const innerUnit = innerArea / 10;
+	const x = 0;
+	const y = cfMargin;
+	const width = innerArea;
+	const height = innerArea;
+	const arcControlX = 5 * innerUnit;
+	const arcControlY = 12/2 * innerUnit;
+	const arcEndY = 8 / 2 * innerUnit;
+
+	const transX = cfMargin + x;
+	const transY = cfMargin + y;
+	const transWidth = cfMargin + width;
+	const transHeight = height - 2 * cfMargin;
+	const transArcControlX = cfMargin + arcControlX;
+	const transArcControlY = cfMargin + arcControlY;
+	const transArcEndY = cfMargin + arcEndY;
+
+	drawRect(svgElemBottomShaded, idConglArcPathBottom, styleBottom, transX, transY, width, transHeight);
+
+	const pathDString = `M ${transX} ${transY} L ${transX} ${transArcEndY} Q ${transArcControlX} ${transArcControlY} ${transWidth} ${transArcEndY} L ${transWidth} ${transY} Z`;
+	drawPath(svgElemTopLight, idConglArcPathTop, styleTop, pathDString);
+}
+
 function drawHexagonDividedByArc(svgElemTopLight, svgElemBottomShaded, hexTopId, hexBottomId, hexTopStyle, hexBottomStyle, cfSize, cfMargin) {
 	const cX = cfSize / 2;
 	const cY = cfSize / 2;
@@ -1921,6 +1947,111 @@ function drawAnimalsUnitIcon() {
 	drawAnimalsSymbol(gCircle, styleAnimals);
 }
 
+function  drawVictoryPointsIcon() {
+	let gVertGrad = backgroundSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+	let gBorder = coverageSVGLayer;
+
+	const colorArcPathTop = '#e17000';//'#a7a324';
+	const colorArcPathBottom = '#d63600';//'#50822e';
+	const colorTrace = 'rgba(0, 0, 0, 0)';
+	const colorTraceBorder = '#000';
+	const styleConglArcPathTop = `fill: ${colorArcPathTop}; stroke: ${colorArcPathTop}; stroke-width: 1`;
+	const styleConglArcPathBottom = `fill: ${colorArcPathBottom}; stroke: ${colorArcPathBottom}; stroke-width: 1`;
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const styleAnimals = `fill: ${colorTrace}; stroke: ${colorTraceBorder}; stroke-width: 6`;
+
+	const vg1Red = 225;
+	const vg1Green = 112;
+	const vg1Blue = 0;
+	const vg2Red = 153;
+	const vg2Green = 38;
+	const vg2Blue = 0;
+
+	const margin = globalUnitSize / 4 ;
+	const borderSize = globalSize - globalUnitSize / 2;
+
+	drawRectWithVerticalGradient(gFillShad, idGradRing, idRing, 0, 6 * margin, globalSize, globalSize - 12 * margin, vg1Red, vg1Green, vg1Blue, vg2Red, vg2Green, vg2Blue);
+	drawRectDividedByArc(gCircle, gCircle, 'filledSquareTopId', 'filledSquareBottomId', globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+	drawRect(gBorder, 'outerRectEmptyId', styleCircleOuterBlack, margin, 5 * margin, borderSize, borderSize - 2 * globalUnitSize );
+
+	drawVictoryPointsSymbol(gBorder, colorTrace, colorTraceBorder);
+}
+
+function drawVictoryPointsSymbol(layer, colorTrace, colorTraceBorder) {
+	drawGlobalBall(layer, 'globalBallId', colorTrace, colorTraceBorder);
+}
+
+
+
+function drawGlobalBall(layer, oId, colorTrace, colorTraceBorder) {
+	const cX = 382;
+	const cY = 387;
+	const rX = 138;
+	const rY = 138;
+
+	const horX = 106;
+	const horY = 86;
+	const cDiffY = 39;
+
+	const vertX = 18;
+	const vertY = 0;
+	const cDiffX = 121;
+
+	//276 = cX - diffX;
+	//301 = cY - diffY;
+	//488 = cX + diffX;
+	//473 =
+	//340 = cY - diffY + cDiffY;
+	//444 = cY + diffY - cDiffY;
+
+	const rotateDegrees = 0;
+
+	const styleThick = `fill: ${colorTrace}; stroke: ${colorTraceBorder}; stroke-width: 18`;
+	const styleThin = `fill: ${colorTrace}; stroke: ${colorTraceBorder}; stroke-width: 6`;
+	const styleBlack = `fill: ${colorTraceBorder}`;
+
+	drawRotatedEllipse(layer, oId, styleThick, cX, cY, rX, rY, rotateDegrees);
+
+	let pathD = `M ${cX-rX} ${cY} L ${cX+rX} ${cY} `;
+	pathD = pathD.concat(`M ${cX} ${cY-rY} L ${cX} ${cY+rY} `);
+	pathD = pathD.concat(`M ${cX - horX} ${cY - horY} Q ${cX} ${cY - horY + cDiffY} ${cX + horX} ${cY - horY} `);
+	pathD = pathD.concat(`M ${cX - horX} ${cY + horY} Q ${cX} ${cY + horY - cDiffY} ${cX + horX} ${cY + horY} `);
+	pathD = pathD.concat(`M ${cX - vertX} ${cY - rY} Q ${cX - cDiffX} ${cY} ${cX - vertX} ${cY + rY} `);
+	pathD = pathD.concat(`M ${cX + vertX} ${cY - rY} Q ${cX + cDiffX} ${cY} ${cX + vertX} ${cY + rY} `);
+
+	drawPath(layer, 'globalLinesId', styleThin, pathD);
+
+	let points = [];
+	points.push(562, 195);
+	points.push(532, 308);
+	points.push(521, 275);
+	points.push(523, 253);
+	points.push(486, 287);
+	points.push(472, 274);
+	points.push(509, 240);
+	points.push(485, 242);
+	points.push(455, 227);
+	points.push(562, 195);
+
+	pathD = `M ${transmitX(points[0])} ${transmitY(points[1])} `;
+	for (let lineI = 2; lineI < 20; lineI += 2) {
+		pathD = pathD.concat(`L ${transmitX(points[lineI])} ${transmitY(points[lineI+1])} `);
+	}
+	pathD.concat(" Z ");
+
+	drawPath(layer, 'globalMarsArrowId', styleBlack, pathD);
+}
+
+function transmitX(value) {
+	return value;
+}
+
+function transmitY(value) {
+	return value;
+}
+
 function drawScienceUnitIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -1971,7 +2102,9 @@ function drawGraphics() {
 	//drawSteelUnitIcon();
 	//drawVegetationUnitIcon();
 	//drawMicrobesUnitIcon();
-	drawAnimalsUnitIcon();
+	//drawAnimalsUnitIcon();
+	drawVictoryPointsIcon();
+
 
 	//drawScienceUnitIcon();
 }

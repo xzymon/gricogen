@@ -2052,6 +2052,26 @@ function transmitY(value) {
 	return value;
 }
 
+function drawDrawCardIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorTrace = '#e17000';
+	const stylePlainBlack = "fill: black";
+	const styleMars = `fill: ${colorTrace}`;
+
+	const cardWidth = 10 / 15 * globalSize;
+	const cardHeight = globalSize;
+	const xStart = (globalSize - cardWidth) / 2;
+	const xEnd = globalSize - xStart;
+	const yStart = 0;
+	const yEnd = globalSize - yStart;
+
+	drawRect(gFillShad, 'outerRectEmptyId', stylePlainBlack, xStart, yStart, cardWidth, cardHeight);
+	drawCircle(gCircle, 'marsCircleId', styleMars, globalSize / 2, 5 * globalUnitSize, 10 / 4 * globalUnitSize);
+}
+
 function drawScienceUnitIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -2103,8 +2123,8 @@ function drawGraphics() {
 	//drawVegetationUnitIcon();
 	//drawMicrobesUnitIcon();
 	//drawAnimalsUnitIcon();
-	drawVictoryPointsIcon();
-
+	//drawVictoryPointsIcon();
+	drawDrawCardIcon();
 
 	//drawScienceUnitIcon();
 }

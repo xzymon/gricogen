@@ -1509,6 +1509,117 @@ function drawEarthCategoryIcon() {
 	drawCordillera(gCircle, styleMountains);
 }
 
+function drawJupiterCategoryIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gPlanet = bodySVGLayer;
+	let gPassatsBottom = outfitSVGLayer;
+	let gPassatsTop = coverageSVGLayer;
+	let gBorder = effectsSVGLayer;
+
+	const colorMainPlanet = '#ddeaf7';
+	const colorPole = '#332f25';
+	const colorPolarPassats = '#8d8678';
+	const colorPolarPassatFirstSouth = '#788688';
+	const colorTropicPassatDarkSouth = '#704a28';
+	const colorTropicPassatDarkLastNorth = '#9e6d3f';
+	const colorTropicPassatDarkNorth = '#d2c8b8';
+	const colorTropicPassatDarkFirstNorth = '#9e6d3f';
+	const colorTropicPassatSouth = '#9e6d3f';
+	const colorPassatEquatorial = '#f7f5f5';
+	const colorBigRedSpot = '#edb571';
+	const colorBigRedSpotCenter = '#d18234';
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+	const stylePlanet = `fill: ${colorMainPlanet}`;
+	const styleBigRedSpot = `fill: ${colorBigRedSpot}`;
+	const styleBigRedSpotCenter = `fill: ${colorBigRedSpotCenter}`;
+
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 207, 207, 207, 16, 16, 16);
+	drawCircle(gPlanet, 'mainPlanetId', stylePlanet, globalSize/2, globalSize/2, (globalSize/2) - globalUnitSize );
+	drawCircle(gBorder, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4) );
+
+	drawPoleNorth(gPassatsTop, colorPole);
+	drawPolarPassatNorth(gPassatsBottom, colorPolarPassats);
+
+	drawTropicPassatDarkLastNorth(gPassatsTop, colorTropicPassatDarkLastNorth);
+	drawTropicPassatDarkNorth(gPassatsTop, colorTropicPassatDarkNorth);
+	drawTropicPassatDarkFirstNorth(gPassatsTop, colorTropicPassatDarkFirstNorth);
+
+	drawPassatEquatorial(gPassatsTop, colorPassatEquatorial);
+	drawPassatSouth(gPassatsBottom, colorTropicPassatSouth);
+	drawTropicPassatDarkSouth(gPassatsTop, colorTropicPassatDarkSouth);
+
+	drawRotatedEllipse(gPassatsBottom, 'bigRedSpotId', styleBigRedSpot, 490, 510, 64, 34, -6);
+	drawRotatedEllipse(gPassatsTop, 'bigRedSpotCenterId', styleBigRedSpotCenter, 490, 510, 29, 19, -6);
+
+	drawPolarPassatFirstSouth(gPassatsTop, colorPolarPassatFirstSouth);
+	drawPolarPassatSouth(gPassatsTop, colorPole);
+	drawPolarPassatLastSouth(gPassatsBottom, colorPolarPassats);
+	drawPoleSouth(gPassatsTop, colorPole);
+}
+
+function drawPoleNorth(svgElem, color) {
+	const pathD = "M 200 134 A 333 333 233 0 1 535 96 Q 367 109 200 134 Z";
+	drawPath(svgElem, 'poleNorthId', `fill: ${color}`, pathD);
+}
+
+function drawPoleSouth(svgElem, color) {
+	const pathD = "M 610 659 A 333 333 51 0 1 259 702 Q 434 676 610 659 Z";
+	drawPath(svgElem, 'poleSouthId', `fill: ${color}`, pathD);
+}
+
+function drawPolarPassatNorth(svgElem, color) {
+	const pathD = "M 126 211 A 333 333 215 0 1 618 149 Q 389 157 126 211 Z";
+	drawPath(svgElem, 'passatPolarNorthId', `fill: ${color}`, pathD);
+}
+
+function drawPassatEquatorial(svgElem, color) {
+	const pathD = "M 69 365 Q 390 304 715 292 A 333 333 -19.000000000000004 0 1 731 365 Q 401 385 71 452 A 333 333 171 0 1 69 365 Z";
+	drawPath(svgElem, 'passatPolarLastSouthId', `fill: ${color}`, pathD);
+}
+
+function drawPassatSouth(svgElem, color) {
+	const pathD = "M 77 481 Q 403 406 733 388 A 333 333 -2 0 1 732 429 L 451 462 L 384 513 L 106 556 A 333 333 152.00000000000003 0 1 77 481 Z";
+	drawPath(svgElem, 'passatPolarLastSouthId', `fill: ${color}`, pathD);
+}
+
+function drawTropicPassatDarkLastNorth(svgElem, color) {
+	//114 230 Q 400 187 647 177
+	//666 200 Q 380 208 95 266
+	const pathD = "M 114 230 Q 400 187 647 177 L 666 200 Q 380 208 95 266 Z";
+	drawPath(svgElem, 'passatPolarLastSouthId', `fill: ${color}`, pathD);
+}
+
+function drawTropicPassatDarkNorth(svgElem, color) {
+	const pathD = "M 687 231 Q 383 249 82 303 L 85 292 Q 381 235 680 220 Z";
+	drawPath(svgElem, 'passatPolarLastSouthId', `fill: ${color}`, pathD);
+}
+
+function drawTropicPassatDarkFirstNorth(svgElem, color) {
+	const pathD = "M 82 303 Q 383 249 687 231 A 333 333 329.5 0 1 716 294 Q 390 304 69 365 A 333 333 186 0 1 82 303";
+	drawPath(svgElem, 'passatPolarLastSouthId', `fill: ${color}`, pathD);
+}
+
+function drawTropicPassatDarkSouth(svgElem, color) {
+	const pathD = "M 733 406 A 333 333 1 0 1 724 475 L 600 496 Q 561 490 544 470 Q 529 457 500 458 Q 471 460 443 474 Q 426 483 404 505 Q 402 510 395 512 L 307 523 L 296 519 Q 322 509 383 504 Q 406 477 443 458 Q 500.5 430 558 449 L 733 406";
+	drawPath(svgElem, 'passatPolarLastSouthId', `fill: ${color}`, pathD);
+}
+
+function drawPolarPassatFirstSouth(svgElem, color) {
+	const pathD = "M 700 543 Q 420 570 140 613 L 150 623 Q 420 588 689 565 Z";
+	drawPath(svgElem, 'passatPolarLastSouthId', `fill: ${color}`, pathD);
+}
+
+function drawPolarPassatSouth(svgElem, color) {
+	const pathD = "M 668 599 Q 429 626 190 662 L 206 673 Q 429 642 653 617 Z";
+	drawPath(svgElem, 'passatPolarSouthId', `fill: ${color}`, pathD);
+}
+
+function drawPolarPassatLastSouth(svgElem, color) {
+	const pathD = "M 691 561 A 333 333 29.000000000000004 0 1 149 618 Z";
+	drawPath(svgElem, 'passatPolarLastSouthId', `fill: ${color}`, pathD);
+}
+
 function drawMicrobesCategoryIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -2103,7 +2214,7 @@ function drawGraphics() {
 	//drawBuildingCategoryIcon();
 	//drawSpaceCategoryIcon();
 	//drawEarthCategoryIcon();
-
+	drawJupiterCategoryIcon();
 
 	//drawMicrobesCategoryIcon();
 	//drawAnimalsCategoryIcon();
@@ -2124,7 +2235,7 @@ function drawGraphics() {
 	//drawMicrobesUnitIcon();
 	//drawAnimalsUnitIcon();
 	//drawVictoryPointsIcon();
-	drawDrawCardIcon();
+	//drawDrawCardIcon();
 
 	//drawScienceUnitIcon();
 }

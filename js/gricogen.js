@@ -179,6 +179,40 @@ function drawPath(svgElem, oId, styleForPath, pathDString) {
 	return path;
 }
 
+function generatePolygonPoints(xpoints, ypoints) {
+	let points = new String();
+	let loop = 0;
+	for (; loop < xpoints.length; loop++) {
+		if (loop > 0) {
+			points = points.concat(' ');
+		}
+		points = points.concat(xpoints[loop]).concat(',').concat(ypoints[loop]);
+	}
+	return points;
+}
+
+function drawPolyline(svgElem, style, xpoints, ypoints, strokeWidth) {
+	let points = generatePolygonPoints(xpoints, ypoints);
+	const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+	polyline.setAttribute(svganStyle, style);
+	polyline.setAttribute('points', points);
+	polyline.setAttribute('stroke-width', strokeWidth);
+	console.log(polyline);
+	svgElem.appendChild(polyline);
+}
+
+function drawPolygon(svgElem, oId, style, xpoints, ypoints) {
+	let points = generatePolygonPoints(xpoints, ypoints);
+	console.log(points);
+	const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+	poly.id = oId;
+	poly.setAttribute(svganStyle, style);
+	poly.setAttribute('points', points);
+	console.log(poly);
+	svgElem.appendChild(poly);
+
+}
+
 //figury geometryczne - podstawowe
 
 // rysowanie prostokata
@@ -1876,6 +1910,215 @@ function drawCityIcon() {
 	drawCity(gBorder, 'outerGreenId', colorSymbol, colorHexBottom, globalSize);
 }
 
+function drawMegaCreditsIcon() {
+	drawMegaCreditWithValue('43');
+}
+
+function drawMegaCreditWithValue(megaCreditValue) {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gText = outfitSVGLayer;
+
+	const multiplier = 16;
+	const scale = multiplier / 32;
+	const gH = scale * 800;
+	const gW = gH;
+	const gMarginX = 0;//gH / 16;
+	const gMarginY = 0;//gW / 16;
+
+	const colorYellow = '#ffee00';
+	const colorOrange = '#ff8000';
+	const colorWhite = '#ffffff';
+	const colorBrown = '#b35900';
+	const colorBlack = '#000000';
+
+	const styleMegaYellow = `fill: ${colorYellow}`;
+	const styleMegaOrange = `fill: ${colorOrange}`;
+	const styleMegaWhite = `fill: ${colorYellow}; stroke: ${colorWhite}`;
+	const styleMegaBrown = `fill: ${colorYellow}; stroke: ${colorBrown}`;
+	const styleMegaBlack = `fill: ${colorBlack}`;
+
+	drawMegaValueHolder(gVertGrad, gFillShad, gText, 'idMegaBody', styleMegaYellow, styleMegaOrange, styleMegaWhite, styleMegaBrown, styleMegaBlack, gMarginX, gMarginY, gW - gMarginX, gH - gMarginY, multiplier, megaCreditValue);
+}
+
+function drawMegaValueHolder(svgElem, shadowLayer, textLayer, oId, styleYellow, styleOrange, styleWhite, styleBrown, styleBlack, octX, octY, octW, octH, textMultiplier, textValue) {
+	let textDivider = 6;
+	let points = new String();
+	let ratio = 2 / 5;
+	let cutX = ratio * (octW - octX) / (2 * (1 + ratio));
+	let cutY = ratio * (octH - octY) / (2 * (1 + ratio));
+	let xpoints = new Array();
+	let ypoints = new Array();
+	xpoints.push(octW - cutX);
+	xpoints.push(octW);
+	xpoints.push(octW);
+	xpoints.push(octW - cutX);
+	xpoints.push(octX + cutX);
+	xpoints.push(octX);
+	xpoints.push(octX);
+	xpoints.push(octX + cutX);
+	ypoints.push(octY);
+	ypoints.push(octY + cutY);
+	ypoints.push(octH - cutY);
+	ypoints.push(octH);
+	ypoints.push(octH);
+	ypoints.push(octH - cutY);
+	ypoints.push(octY + cutY);
+	ypoints.push(octY);
+
+	drawPolygon(svgElem, oId, styleOrange, xpoints, ypoints);
+
+	// ornament
+	let oCutX = cutX;
+	let oCutX2 = 2 * cutX;
+	let oCutX3 = 3 * cutX;
+	let oCutY = cutY;
+	let oCutY2 = 2 * cutY;
+	let oCutY3 = 3 * cutY;
+	let oCutXMargin = cutX / 6;
+	let oCutYMargin = cutY / 6;
+	let ornamentStrokeWidth = oCutXMargin / 1; //2
+	const smx = 4; //shadowMarginX
+	const smy = 4; //shadowMarginY
+	// white ornament points
+	let woxpoints = new Array();
+	let woypoints = new Array();
+	woxpoints.push(octX + oCutXMargin);
+	woxpoints.push(octX + oCutXMargin);
+	woxpoints.push(octX + oCutX);
+	woxpoints.push(octX + oCutX2);
+	woxpoints.push(octX + oCutX2);
+	woxpoints.push(octW - oCutX2);
+	woxpoints.push(octW - oCutX2);
+	woxpoints.push(octW - oCutX);
+	woxpoints.push(octW - oCutXMargin);
+	woxpoints.push(octW - oCutXMargin);
+	woypoints.push(octY + oCutY2);
+	woypoints.push(octY + oCutY);
+	woypoints.push(octY + oCutYMargin);
+	woypoints.push(octY + oCutYMargin);
+	woypoints.push(octY + oCutY);
+	woypoints.push(octY + oCutY);
+	woypoints.push(octY + oCutYMargin);
+	woypoints.push(octY + oCutYMargin);
+	woypoints.push(octY + oCutY);
+	woypoints.push(octY + oCutY2);
+
+	//drawPolygon(svgElem, oId, oClass, woxpoints, woypoints);
+	drawPolyline(svgElem, styleWhite, woxpoints, woypoints, ornamentStrokeWidth);
+	const topShadowX = octX + oCutX2;
+	const topShadowY = octY + oCutYMargin;
+	const topShadowW = (octW - oCutX2) - topShadowX;
+	const topShadowH = oCutY - oCutYMargin;
+	drawRect(shadowLayer, 'topShadowId', styleOrange, topShadowX + smx, topShadowY, topShadowW - 2 * smx, topShadowH - smy);
+
+	let bloxpoints = new Array();
+	let bloypoints = new Array();
+	bloxpoints.push(octX + oCutXMargin);
+	bloxpoints.push(octX + oCutX);
+	bloxpoints.push(octX + oCutX);
+	bloypoints.push(octY + oCutY2);
+	bloypoints.push(octY + oCutY2);
+	bloypoints.push(octY + oCutY3);
+	drawPolyline(svgElem, styleBrown, bloxpoints, bloypoints, ornamentStrokeWidth);
+
+	let wloxpoints = new Array();
+	let wloypoints = new Array();
+	wloxpoints.push(octX + oCutXMargin);
+	wloxpoints.push(octX + oCutX);
+	wloxpoints.push(octX + oCutX);
+	wloypoints.push(octH - oCutY2);
+	wloypoints.push(octH - oCutY2);
+	wloypoints.push(octH - oCutY3);
+	drawPolyline(svgElem, styleWhite, wloxpoints, wloypoints, ornamentStrokeWidth);
+
+	const leftShadowX = octX + oCutXMargin;
+	const leftShadowY = octY + oCutY2;
+	const leftShadowW = (octX + oCutX) - leftShadowX;
+	const leftShadowH = octH - oCutY2 - leftShadowY;
+	drawRect(shadowLayer, 'leftShadowId', styleOrange, leftShadowX, leftShadowY + smy, leftShadowW - smx, leftShadowH - 2 * smy);
+
+	let broxpoints = new Array();
+	let broypoints = new Array();
+	broxpoints.push(octW - oCutXMargin);
+	broxpoints.push(octW - oCutX);
+	broxpoints.push(octW - oCutX);
+	broypoints.push(octY + oCutY2);
+	broypoints.push(octY + oCutY2);
+	broypoints.push(octY + oCutY3);
+	drawPolyline(svgElem, styleBrown, broxpoints, broypoints, ornamentStrokeWidth);
+
+	let wroxpoints = new Array();
+	let wroypoints = new Array();
+	wroxpoints.push(octW - oCutXMargin);
+	wroxpoints.push(octW - oCutX);
+	wroxpoints.push(octW - oCutX);
+	wroypoints.push(octH - oCutY2);
+	wroypoints.push(octH - oCutY2);
+	wroypoints.push(octH - oCutY3);
+	drawPolyline(svgElem, styleWhite, wroxpoints, wroypoints, ornamentStrokeWidth);
+
+	const rightShadowX = octW - oCutX;
+	const rightShadowY = octY + oCutY2;
+	const rightShadowW = (octW - oCutXMargin) - rightShadowX;
+	const rightShadowH = octH - oCutY2 - rightShadowY;
+	drawRect(shadowLayer, 'rightShadowId', styleOrange, rightShadowX + smx, rightShadowY + smy, rightShadowW - smx, rightShadowH - 2 * smy);
+
+	// brown ornament points
+	let wbxpoints = new Array();
+	let wbypoints = new Array();
+	wbxpoints.push(octX + oCutXMargin);
+	wbxpoints.push(octX + oCutXMargin);
+	wbxpoints.push(octX + oCutX);
+	wbxpoints.push(octX + oCutX2);
+	wbxpoints.push(octX + oCutX2);
+	wbxpoints.push(octW - oCutX2);
+	wbxpoints.push(octW - oCutX2);
+	wbxpoints.push(octW - oCutX);
+	wbxpoints.push(octW - oCutXMargin);
+	wbxpoints.push(octW - oCutXMargin);
+	wbypoints.push(octH - oCutY2);
+	wbypoints.push(octH - oCutY);
+	wbypoints.push(octH - oCutYMargin);
+	wbypoints.push(octH - oCutYMargin);
+	wbypoints.push(octH - oCutY);
+	wbypoints.push(octH - oCutY);
+	wbypoints.push(octH - oCutYMargin);
+	wbypoints.push(octH - oCutYMargin);
+	wbypoints.push(octH - oCutY);
+	wbypoints.push(octH - oCutY2);
+
+	drawPolyline(svgElem, styleBrown, wbxpoints, wbypoints, ornamentStrokeWidth);
+
+	const bottomShadowX = octX + oCutX2;
+	const bottomShadowY = octH - oCutY;
+	const bottomShadowW = (octW - oCutX2) - bottomShadowX;
+	const bottomShadowH = octH - oCutYMargin - bottomShadowY;
+	drawRect(shadowLayer, 'bottomShadowId', styleOrange, bottomShadowX + smx, bottomShadowY + smy, bottomShadowW - 2 * smx, bottomShadowH - smy);
+
+	const centralYellowX = octX + oCutX;
+	const centralYellowY = octY + oCutY2;
+	const centralYellowW = (octW - oCutX) - centralYellowX;
+	const centralYellowH = octH - oCutY2 - centralYellowY;
+	drawRect(shadowLayer, 'centralYellowId', styleYellow, centralYellowX + smx, centralYellowY - smx, centralYellowW - 2 * smx, centralYellowH + 2 * smy);
+
+	const tb = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+	tb.setAttribute('class', styleBlack);
+	tb.setAttribute('x', octX + ((octW - octX) / 2));
+	tb.setAttribute('y', octY + ((octH - octY) / 2));
+	tb.setAttribute('text-anchor', 'middle');
+	tb.setAttribute('alignment-baseline', 'central');
+	//tb.setAttribute('dx', -48);
+	tb.setAttribute('dy', 30 * textMultiplier / textDivider);
+	tb.setAttribute('font-size', 96 * textMultiplier / textDivider);
+	tb.setAttribute('font-family', 'Squada One');
+	//tb.setAttribute('',);
+	console.log(tb);
+	const textTB = document.createTextNode(textValue);
+	tb.appendChild(textTB);
+	textLayer.appendChild(tb);
+}
+
 function drawEnergyUnitIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -2214,7 +2457,7 @@ function drawGraphics() {
 	//drawBuildingCategoryIcon();
 	//drawSpaceCategoryIcon();
 	//drawEarthCategoryIcon();
-	drawJupiterCategoryIcon();
+	//drawJupiterCategoryIcon();
 
 	//drawMicrobesCategoryIcon();
 	//drawAnimalsCategoryIcon();
@@ -2227,6 +2470,7 @@ function drawGraphics() {
 	//drawCityIcon();
 	//drawOceanIcon();
 
+	drawMegaCreditsIcon();
 	//drawEnergyUnitIcon();
 	//drawHeatUnitIcon();
 	//drawTitaniumUnitIcon();

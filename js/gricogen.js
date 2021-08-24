@@ -1910,6 +1910,48 @@ function drawCityIcon() {
 	drawCity(gBorder, 'outerGreenId', colorSymbol, colorHexBottom, globalSize);
 }
 
+function drawTemperatureIcon() {
+	let gVertGrad = backgroundSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+	let gBorder = coverageSVGLayer;
+
+	let unit = globalSize / 48;
+
+	const colorBack = '#cccccc';
+	const colorBulb = '#007fff';
+	const colorStellaTop = '#ff0000';
+	const styleBack = `fill: ${colorBack}; stroke: ${colorBack}; stroke-width: ${1 * unit}`;
+	const styleStellaMarkerBack = `fill: ${colorBack}`;
+	const styleBulb = `fill: ${colorBulb}`;
+	const styleStellaTop = `fill: ${colorStellaTop}`;
+
+	const stellaX = globalSize/2 - 3*unit;
+	const stellaY = 4*unit;
+	const stellaWidth = 6*unit;
+	const stellaUnitHeight = 7*unit;
+
+	const stellaMarkerX = globalSize/2 - 2*unit;
+	const stellaMarkerY = 4*unit - 1/4*unit;
+
+	drawCircle(gVertGrad, 'temperatureBulbBackId', styleBack, globalSize/2, 39*unit, 8*unit);
+	drawCircle(gVertGrad, 'temperatureStellaTopBackId', styleBack, globalSize/2, 4*unit, 3*unit);
+	drawRect(gVertGrad, 'temperatureStellaBackId', styleBack, stellaX, stellaY, stellaWidth, 28*unit);
+
+	drawCircle(gFillShad, 'temperatureBulbId', styleBulb, globalSize/2, 39*unit, 8*unit);
+	drawCircle(gFillShad, 'temperatureStellaTopBackId', styleStellaTop, globalSize/2, 4*unit, 3*unit);
+
+	drawRectWithVerticalGradient(gCircle, 'stella1GradId', 'stella1Id', stellaX, stellaY, stellaWidth, stellaUnitHeight, 255, 0, 0, 255, 0, 255);
+	drawRectWithVerticalGradient(gCircle, 'stella2GradId', 'stella2Id', stellaX, stellaY+1*stellaUnitHeight, stellaWidth, stellaUnitHeight, 255, 0, 255, 0, 0, 255);
+	drawRectWithVerticalGradient(gCircle, 'stella3GradId', 'stella3Id', stellaX, stellaY+2*stellaUnitHeight, stellaWidth, stellaUnitHeight, 0, 0, 255, 0, 64, 255);
+	drawRectWithVerticalGradient(gCircle, 'stella4GradId', 'stella4Id', stellaX, stellaY+3*stellaUnitHeight, stellaWidth, stellaUnitHeight, 0, 64, 255, 0, 128, 255);
+
+	//drawRect(gBorder, 'temperatureStellaMarker1Id', styleStellaMarkerBack, stellaMarkerX, stellaMarkerY, 4*unit, 1/2*unit);
+	drawRect(gBorder, 'temperatureStellaMarker1Id', styleStellaMarkerBack, stellaMarkerX, stellaMarkerY+1*stellaUnitHeight, 4*unit, 1/2*unit);
+	drawRect(gBorder, 'temperatureStellaMarker2Id', styleStellaMarkerBack, stellaMarkerX, stellaMarkerY+2*stellaUnitHeight, 4*unit, 1/2*unit);
+	drawRect(gBorder, 'temperatureStellaMarker3Id', styleStellaMarkerBack, stellaMarkerX, stellaMarkerY+3*stellaUnitHeight, 4*unit, 1/2*unit);
+}
+
 function drawMegaCreditsIcon() {
 	drawMegaCreditWithValue('43');
 }
@@ -2470,7 +2512,9 @@ function drawGraphics() {
 	//drawCityIcon();
 	//drawOceanIcon();
 
-	drawMegaCreditsIcon();
+	drawTemperatureIcon();
+
+	//drawMegaCreditsIcon();
 	//drawEnergyUnitIcon();
 	//drawHeatUnitIcon();
 	//drawTitaniumUnitIcon();

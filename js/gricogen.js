@@ -2469,6 +2469,7 @@ function drawDrawCardIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
 	let gCircle = outfitSVGLayer;
+	let textLayer = coverageSVGLayer;
 
 	const colorTrace = '#e17000';
 	const stylePlainBlack = "fill: black";
@@ -2483,6 +2484,44 @@ function drawDrawCardIcon() {
 
 	drawRect(gFillShad, 'outerRectEmptyId', stylePlainBlack, xStart, yStart, cardWidth, cardHeight);
 	drawCircle(gCircle, 'marsCircleId', styleMars, globalSize / 2, 5 * globalUnitSize, 10 / 4 * globalUnitSize);
+
+	const multiplier = 16;
+	const scale = multiplier / 32;
+	const gH = scale * 800;
+	const gW = gH;
+	const gMarginX = 0;//gH / 16;
+	const gMarginY = 0;//gW / 16;
+
+	const octX = gMarginX;
+	const octY = gMarginY;
+	const octW = gW - gMarginX;
+	const octH = gH - gMarginY;
+	console.log(octX);
+	console.log(octY);
+	console.log(octW);
+	console.log(octH);
+
+	const textMultiplier = multiplier;
+	const textDivider = 4;
+	const colorBlack = '#ffffff';
+	const styleBlack = `fill: ${colorBlack}`;
+
+	const tb = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+	tb.setAttribute('class', styleBlack);
+	tb.setAttribute('x', octX + ((octW - octX) / 2));
+	tb.setAttribute('y', octY + ((octH - octY) / 2));
+	tb.setAttribute('text-anchor', 'middle');
+	tb.setAttribute('alignment-baseline', 'central');
+	tb.setAttribute('dx', 200);
+	//tb.setAttribute('dy', 30 * textMultiplier / textDivider);
+	tb.setAttribute('dy', 260);
+	tb.setAttribute('font-size', 96 * textMultiplier / textDivider);
+	tb.setAttribute('font-family', 'Squada One');
+	//tb.setAttribute('',);
+	console.log(tb);
+	const textTB = document.createTextNode('?');
+	tb.appendChild(textTB);
+	textLayer.appendChild(tb);
 }
 
 function drawScienceUnitIcon() {
@@ -2510,7 +2549,7 @@ function drawScienceUnitIcon() {
 }
 
 function drawGraphics() {
-	drawVictoryPointsEndGameBonusIcon();
+	//drawVictoryPointsEndGameBonusIcon();
 	//drawEventCategoryIcon();
 	//drawCityCategoryIcon();
 	//drawEnergyCategoryIcon();
@@ -2541,7 +2580,7 @@ function drawGraphics() {
 	//drawMicrobesUnitIcon();
 	//drawAnimalsUnitIcon();
 	//drawVictoryPointsIcon();
-	//drawDrawCardIcon();
+	drawDrawCardIcon();
 
 	//drawScienceUnitIcon();
 }

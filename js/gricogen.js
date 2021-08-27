@@ -1419,6 +1419,23 @@ function forestScaleY(value) {
 	return (value * 1.2) - 65;
 }
 
+function drawVictoryPointsEndGameBonusIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorArcPathTop = 'rgb(127,90,63)';
+	const colorArcPathBottom = 'rgb(81, 55, 38)';
+
+	const styleConglArcPathTop = "fill: " + colorArcPathTop + "; stroke: " + colorArcPathTop + "; stroke-width: 1";
+	const styleConglArcPathBottom = "fill: " + colorArcPathBottom + "; stroke: " + colorArcPathBottom + "; stroke-width: 1";
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 81, 55, 38, 50, 35, 25);
+	drawCircleFilledWithShading(gFillShad, gFillShad, idConglArcPathTop, idConglArcPathBottom, globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4) );
+}
+
 // cale ksztalty
 function drawEventCategoryIcon() {
 	let gVertGrad = coreSVGLayer;
@@ -2493,6 +2510,7 @@ function drawScienceUnitIcon() {
 }
 
 function drawGraphics() {
+	drawVictoryPointsEndGameBonusIcon();
 	//drawEventCategoryIcon();
 	//drawCityCategoryIcon();
 	//drawEnergyCategoryIcon();
@@ -2512,7 +2530,7 @@ function drawGraphics() {
 	//drawCityIcon();
 	//drawOceanIcon();
 
-	drawTemperatureIcon();
+	//drawTemperatureIcon();
 
 	//drawMegaCreditsIcon();
 	//drawEnergyUnitIcon();

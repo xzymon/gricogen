@@ -2580,7 +2580,7 @@ function drawGraphics() {
 	//drawMicrobesUnitIcon();
 	//drawAnimalsUnitIcon();
 	//drawVictoryPointsIcon();
-	drawDrawCardIcon();
+	//drawDrawCardIcon();
 
 	//drawScienceUnitIcon();
 }

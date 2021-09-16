@@ -1419,6 +1419,52 @@ function forestScaleY(value) {
 	return (value * 1.2) - 65;
 }
 
+function drawEmptyHexagonIcon() {
+	let gVertGrad = backgroundSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+	let gBorder = coverageSVGLayer;
+
+	const colorAntiHexagonBackground = '#646464';
+
+	const colorSymbol = '#000';
+	const colorHexTop = '#6a6a6a';
+	const colorHexBottom = '#6a6a6a';
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/8);
+	const styleAntiHexagonBackground = "fill: " + colorAntiHexagonBackground;
+	const hexTopStyle = "fill: " + colorHexTop;
+	const hexBottomStyle = "fill: " + colorHexBottom;
+
+	//drawHexagonWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 106, 106, 106, 106, 106, 106);
+
+	//drawAntiHexagon(gBorder, 'antiHexagonBackgroundId', styleAntiHexagonBackground, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
+	drawHexagon(gBorder, 'outerHexagonEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 16));
+
+	//drawHexagon(gFillShad, 'outerGreenHexagonEmptyId', styleGreenOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 2));
+	drawHexagonDividedByArc(gFillShad, gFillShad, 'hexForestTopId', 'hexForestBottomId', hexTopStyle, hexBottomStyle, globalSize, globalUnitSize);
+}
+
+function drawEmptyCircleIcon() {
+	let gVertGrad = coreSVGLayer;
+	let gFillShad = bodySVGLayer;
+	let gCircle = outfitSVGLayer;
+
+	const colorSymbol = '#000';
+	const colorHexTop = '#6a6a6a';
+	const colorHexBottom = '#6a6a6a';
+
+	const styleConglArcPathTop = `fill: ${colorHexTop}`;
+	const styleConglArcPathBottom = `fill: ${colorHexBottom}`;
+
+	const styleCircleOuterBlack = "fill: none; stroke: black; stroke-width: " + (globalUnitSize * 1/2);
+
+
+	drawCircleWithVerticalGradient(gVertGrad, idGradRing, idRing, globalSize/2, globalSize/2, globalSize/2, 106, 106, 106, 106, 106, 106);
+	drawCircleFilledWithShading(gFillShad, gFillShad, idConglArcPathTop, idConglArcPathBottom, globalSize, globalUnitSize, styleConglArcPathTop, styleConglArcPathBottom);
+	drawCircle(gCircle, 'outerCircleEmptyId', styleCircleOuterBlack, globalSize/2, globalSize/2, (globalSize/2) - (globalUnitSize / 4));
+}
+
 function drawVictoryPointsEndGameBonusIcon() {
 	let gVertGrad = coreSVGLayer;
 	let gFillShad = bodySVGLayer;
@@ -2549,6 +2595,8 @@ function drawScienceUnitIcon() {
 }
 
 function drawGraphics() {
+	//drawEmptyHexagonIcon();
+	drawEmptyCircleIcon()
 	//drawVictoryPointsEndGameBonusIcon();
 	//drawEventCategoryIcon();
 	//drawCityCategoryIcon();
